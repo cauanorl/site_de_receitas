@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+  <head>
+    {% include "partials/_head.html" %}
+    {% block head %}{% endblock %}
+  </head>
+
+  <body>
+    {% block content %}{% endblock %}
+
+    {% block import_dom %}{% endblock %}
+  </body>
+</html>
