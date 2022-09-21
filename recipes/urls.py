@@ -7,5 +7,4 @@ app_name = 'recipes'
 
 urlpatterns = [
     path('', views.Home.as_view(), name="home"),
-    path(_('about/'), views.About.as_view(), name="about")
 ]

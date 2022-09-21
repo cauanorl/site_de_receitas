@@ -7,10 +7,3 @@ class Home(TemplateView, View):
     
     def get(self, request, *args, **kwargs):
         return self.render_to_response({'teste': 'home'})
-
-
-class About(TemplateView, View):
-    template_name: str = ''
-    
-    def get(self, request, *args, **kwargs):
-        return HttpResponse("About")
