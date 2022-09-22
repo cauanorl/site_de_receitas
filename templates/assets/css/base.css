@@ -7,17 +7,17 @@
 }
 
 :root {
-  --color-primary: #269fe6;
-  --color-primary-hover: #2086c2;
-  --color-primary-dark: #13141f;
-  --color-primary-dark-hover: #212336;
-  --color-primary-light: #d4ecfa;
-  --color-primary-light-hover: #bdd8e7;
+  --primary-color: #269fe6;
+  --primary-color-hover: #2086c2;
+  --primary-dark-color: #13141f;
+  --primary-dark-color-hover: #212336;
+  --primary-light-color: #d4ecfa;
+  --primary-light-color-hover: #bdd8e7;
 
   --color-white: #fff;
   --color-black: #000;
 
-  --color-dark-text: #444;
+  --dark-color-text: #444;
   --color-info-light: #cce5ff;
   --color-debug-light: #cce5ff;
   --color-success-light: #d4edda;
@@ -58,6 +58,7 @@ body {
   font-size: 1.6rem;
   font-family: var(--font-primary);
   background-color: var(--color-gray-1);
+  color: var(--dark-color-text);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -70,8 +71,30 @@ h1, h2, h3, h4, h5, h6 {
   padding: var(--spacing-gutter-medium);
 }
 
+.button-dark {
+  background-color: var(--primary-dark-color);
+  color: var(--color-white);
+  text-decoration: none;
+  text-align: center;
+  padding: 2rem;
+  transition: all 200ms ease-in-out;
+}
+
+.button-dark:hover {
+  background-color: var(--primary-dark-color-hover)
+}
+
+.button-full-width {
+  display: block;
+  min-width: 100%;
+}
+
+/* ****************** *\
+         Header
+\* ****************** */
+
 .main-header-container {
-  background: var(--color-primary-dark);
+  background: var(--primary-dark-color);
 }
   h1.header-logo {
     text-align: center;
@@ -81,31 +104,29 @@ h1, h2, h3, h4, h5, h6 {
       color: var(--color-white);
       text-decoration: none;
     }
-      .main-logo-icon {
-        margin-right: 1.5rem;
-      }
+      .main-logo-icon { margin-right: 1.5rem }
 
 .search-form {
-  border: .2rem solid var(--color-primary-dark);
+  border: .2rem solid var(--primary-dark-color);
   border-radius: .5rem;
   max-width: 64rem;
   margin: 0 auto;
   position: relative;
 }
 
-.search-form,
-  .search-button {
-  transition: all 250ms ease;
-  }
+/* ****************** *\
+   Search input form 
+\* ****************** */
 
 .search-form:focus-within {
-  border-color: var(--color-primary);
+  border-color: var(--primary-color);
   background: var(--color-white);
 }
 
-  .search-form:focus-within .search-button {
-    color: var(--color-primary)
-  }
+.search-form,
+  .search-button { transition: all 250ms ease }
+
+  .search-form:focus-within .search-button { color: var(--primary-color) }
 
   .search-input,
   .search-button {
@@ -128,7 +149,83 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .search-button:focus {
-    outline: .1rem solid var(--color-primary);
+    outline: .1rem solid var(--primary-color);
     border-radius: .2rem;
     background-color: var(--color-gray-0);
   }
+
+/* ****************** *\
+      Grid recipes
+\* ****************** */
+
+.main-content-list {
+  padding-top: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(34rem, 1fr));
+  gap: var(--spacing-gutter-large);
+}
+  .recipe {
+    border-radius: .5rem;
+    max-width: 64rem;
+    box-shadow: -.3rem .3rem .3rem rgba(0, 0, 0, .2);
+    background: var(--color-white);
+    transition: all 200ms ease-in-out;
+    overflow: hidden;
+  }
+
+  .recipe-list-item:hover {
+    box-shadow: -.3rem .3rem .7rem rgba(0, 0, 0, .4);
+    transform: scale(101%);
+  }
+    
+    .recipe img { max-width: 100% }
+  
+  .recipe-content {
+    padding: var(--spacing-gutter-medium);
+    padding-bottom: 2rem;
+  }
+    h2.recipe-title {
+      font-size: 2.4rem;
+    }
+
+    .recipe-author {
+      margin: 2.5rem 0rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+      .recipe-author-item {
+        margin-right: .7rem;
+        font-style: italic;
+        color: var(--color-gray-4)
+      }
+
+      .recipe-author-item a {
+        color: var(--primary-dark-color);
+        text-decoration: none;
+        transition: color 200ms ease-in-out;
+      }
+
+      .recipe-author-item a:hover {
+        color: var(--primary-color)
+      }
+
+      .recipe-description {
+        font-size: 1.4rem;
+      }
+  
+  .recipe-meta-container {
+    display: flex;
+    justify-content: space-evenly;
+    padding: var(--spacing-gutter-medium);
+    background-color: var(--color-gray-1);
+    text-align: center;
+  }
+    .recipe-meta-title { margin-bottom: .5rem }
+
+    .recipe-meta-text { font-weight: bold }
+  
+  .recipe-footer {
+    width: 100%
+  }
+    .recipe-read-more span { margin-left: .5rem }
