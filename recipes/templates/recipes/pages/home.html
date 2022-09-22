@@ -3,20 +3,23 @@
 
 
 {% block head %}
-  <title>Teste OK</title>
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <title>Teste OK</title>
 {% endblock %}
 
 {% block content %}
-  <header class="main-header-container">
-    <div class="main-header container">
-      <h1 class="header-logo">
-        <a href="{% url "recipes:home" %}" class="main-logo">
-          <i class="fas fa-utensils logo-icon main-logo-icon"></i>
-          <span class="main-logo-text">Recipes</span>
-        </a>
-      </h1>
+  {% include 'partials/_header.html' %}
+
+  <div class="search-container">
+    <div class="container">
+      <form action="" class="search-form">
+        <input type="search" name="search" class="search-input">
+        <button type="submit" class="search-button">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
     </div>
-  </header>
+  </div>
+
 
 {% endblock %}

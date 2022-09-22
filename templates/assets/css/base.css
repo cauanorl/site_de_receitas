@@ -56,7 +56,8 @@ html {
 
 body {
   font-size: 1.6rem;
-  font-family: var(--font-primary)
+  font-family: var(--font-primary);
+  background-color: var(--color-gray-1);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -83,3 +84,51 @@ h1, h2, h3, h4, h5, h6 {
       .main-logo-icon {
         margin-right: 1.5rem;
       }
+
+.search-form {
+  border: .2rem solid var(--color-primary-dark);
+  border-radius: .5rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  position: relative;
+}
+
+.search-form,
+  .search-button {
+  transition: all 250ms ease;
+  }
+
+.search-form:focus-within {
+  border-color: var(--color-primary);
+  background: var(--color-white);
+}
+
+  .search-form:focus-within .search-button {
+    color: var(--color-primary)
+  }
+
+  .search-input,
+  .search-button {
+    border: none;
+    outline: none;
+    background: none;
+    padding: 1rem;
+  }
+
+  .search-input {
+    width: 100%;
+    padding-right: 3.5rem;
+  }
+
+  .search-button {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .search-button:focus {
+    outline: .1rem solid var(--color-primary);
+    border-radius: .2rem;
+    background-color: var(--color-gray-0);
+  }
