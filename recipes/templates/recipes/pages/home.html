@@ -1,28 +1,21 @@
-{% extends 'base.html' %}
+{% extends 'recipes/base/base.html' %}
 {% load static %}
 
 
 {% block head %}
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  <title>Teste OK</title>
+  <title>Teste Home</title>
 {% endblock %}
 
 {% block content %}
-  {% include 'partials/_header.html' %}
-  {% include 'partials/_search-container.html' %}
 
-  <main class="main-content-container">
-    <div class="main-content main-content-list container">
+  <div class="main-content main-content-list container">
 
-      {% include 'recipes/partials/_recipe.html' %}
-      {% include 'recipes/partials/_recipe.html' %}
-      {% include 'recipes/partials/_recipe.html' %}
-      {% include 'recipes/partials/_recipe.html' %}
-      {% include 'recipes/partials/_recipe.html' %}
+    {% include 'recipes/partials/_recipe.html' %}
+    {% include 'recipes/partials/_recipe.html' %}
+    {% include 'recipes/partials/_recipe.html' %}
+    {% include 'recipes/partials/_recipe.html' %}
+    {% include 'recipes/partials/_recipe.html' %}
 
-    </div>
-  </main>
-
-  {% include 'partials/_footer.html' %}
+  </div>
 
 {% endblock %}

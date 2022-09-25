@@ -7,4 +7,5 @@ app_name = 'recipes'
 
 urlpatterns = [
     path('', views.Home.as_view(), name="home"),
+    path(_('recipe/<int:pk>/'), views.DetailRecipe.as_view(), name="detail"),
 ]

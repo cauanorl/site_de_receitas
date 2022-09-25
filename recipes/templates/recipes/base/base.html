@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+  <head>
+    {% include "partials/_head.html" %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'recipes/css/base.css' %}">
+    {% block head %}{% endblock %}
+  </head>
+
+  <body>
+    {% include 'partials/_header.html' %}
+    {% include 'partials/_search-container.html' %}
+
+    <main class="main-content-container">
+      {% block content %}{% endblock %}
+    </main>
+
+
+    {% include 'partials/_footer.html' %}
+    {% block import_dom %}{% endblock %}
+  </body>
+</html>
