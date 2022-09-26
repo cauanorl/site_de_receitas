@@ -3,18 +3,17 @@
 
 
 {% block head %}
-  <title>Teste Home</title>
+  <title>Home | Recipes</title>
 {% endblock %}
 
 {% block content %}
 
   <div class="main-content main-content-list container">
 
-    {% include 'recipes/partials/_recipe.html' %}
-    {% include 'recipes/partials/_recipe.html' %}
-    {% include 'recipes/partials/_recipe.html' %}
-    {% include 'recipes/partials/_recipe.html' %}
-    {% include 'recipes/partials/_recipe.html' %}
+    {% for recipe in recipes %}
+      {% include 'recipes/partials/_recipe.html' with recipe=recipe %}
+    {% endfor %}
+
 
   </div>
 
