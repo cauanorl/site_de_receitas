@@ -4,7 +4,13 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Category(models.Model):
+    class Meta:
+        verbose_name_plural = "Categories"
+
     name = models.CharField(max_length=30)
+    
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
@@ -36,3 +42,6 @@ class Recipe(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name="recipes")
+    
+    def __str__(self):
+        return self.title
