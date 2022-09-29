@@ -8,6 +8,12 @@
 
 {% block content %}
 
+  {% if category_name %}
+    <div class="container" style="text-align:center;">
+      <h2>Filter by: {{ category_name }}</h2>
+    </div>
+  {% endif %}
+
   <div class="main-content main-content-list container">
 
     {% for recipe in recipes %}

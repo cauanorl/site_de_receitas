@@ -2,7 +2,7 @@
   <div class="recipe-cover">
 
     {% if is_list_page %}
-      <a href="{% url 'recipes:detail' 1 %}">
+      <a href="{% url 'recipes:detail' recipe.id %}">
         <img src="{{ recipe.cover.url }}" alt="teste">
       </a>
     {% else %}
@@ -14,7 +14,7 @@
 
     <h2 class="recipe-title">
         {% if is_list_page %}
-          <a href="{% url 'recipes:detail' 1 %}">
+          <a href="{% url 'recipes:detail' recipe.id %}">
             {{ recipe.title }}
           </a>
         {% else %}
@@ -26,7 +26,11 @@
 
       <span class="recipe-author-item">
         <i class="fas fa-user"></i>
-        {{ recipe.author.first_name }} {{ recipe.author.last_name }}
+        {% if recipe.author.get_full_name %}
+          {{ recipe.author.get_full_name }}
+        {% else %}
+          {{ recipe.author.username }}
+        {% endif %}
       </span>
 
       <span class="recipe-author-item">
@@ -35,7 +39,7 @@
       </span>
 
       <span class="recipe-author-item">
-        <a href="#">
+        <a href="{% url "recipes:filter_by_category" recipe.category.id %}">
           <i class="fas fa-layer-group"></i>
           <span>{{ recipe.category.name }}</span>
         </a>
@@ -72,10 +76,10 @@
 
   </div>
 
-  {% if is_list_page %}
+  {% if not is_detail_page %}
 
     <footer class="recipe-footer">
-      <a href="{% url 'recipes:detail' 1 %}" class="recipe-read-more button-dark button-full-width">
+      <a href="{% url 'recipes:detail' recipe.id %}" class="recipe-read-more button-dark button-full-width">
         <i class="fas fa-eye"></i>
         <span>ver mais...</span>
       </a>
