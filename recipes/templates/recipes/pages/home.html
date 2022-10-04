@@ -3,7 +3,9 @@
 
 
 {% block head %}
-  <title>Home | Recipes</title>
+
+    <title>{{ title }} | Recipes</title>
+
 {% endblock %}
 
 {% block content %}
@@ -18,8 +20,9 @@
 
     {% for recipe in recipes %}
       {% include 'recipes/partials/_recipe.html' with recipe=recipe %}
+    {% empty %}
+      <h1 style="text-align: center; margin: 10rem 0rem;">Nenhuma receita publicada no momento</h1>
     {% endfor %}
-
 
   </div>
 

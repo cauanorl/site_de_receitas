@@ -3,6 +3,14 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 
+class PublishedManager(models.Manager):
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(is_published=True).order_by('-id')
+
+        return qs
+
+
 class Category(models.Model):
     class Meta:
         verbose_name_plural = "Categories"
@@ -14,6 +22,9 @@ class Category(models.Model):
 
 
 class Recipe(models.Model):
+    objects = models.Manager()
+    published = PublishedManager()
+
     title = models.CharField(max_length=65)
     description = models.CharField(max_length=165)
     slug = models.SlugField()
@@ -36,12 +47,15 @@ class Recipe(models.Model):
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
-        null=True)
+        null=True,
+        blank=True,
+        default=None,
+    )
 
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="recipes")
-    
+
     def __str__(self):
         return self.title

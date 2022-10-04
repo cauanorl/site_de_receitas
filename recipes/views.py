@@ -7,10 +7,11 @@ class Home(TemplateView, View):
     template_name = 'recipes/pages/home.html'
 
     def get(self, request, *args, **kwargs):
-        recipes = Recipe.objects.filter(is_published=True).order_by('-id')
+        recipes = Recipe.published.all()
 
         return self.render_to_response({
             'recipes': recipes,
+            'title': 'Home',
         })
 
 
@@ -18,7 +19,7 @@ class DetailRecipe(TemplateView, View):
     template_name = 'recipes/pages/detail.html'
 
     def get(self, request, id, *args, **kwargs):
-        recipe = get_object_or_404(Recipe, id=id)
+        recipe = get_object_or_404(Recipe, id=id, is_published=True)
 
         return self.render_to_response({
             'recipe': recipe,
@@ -30,10 +31,12 @@ class FilterRecipesByCategory(TemplateView, View):
     template_name = "recipes/pages/home.html"
 
     def get(self, request, category_id, *args, **kwargs):
-        recipes = Recipe.objects.filter(category__id=category_id)
-        category_name = get_object_or_404(Category, id=category_id).name
-        
+        category = get_object_or_404(Category, id=category_id)
+        recipes = Recipe.published.filter(category__id=category_id)
+        category_name = category.name
+
         return self.render_to_response({
             'recipes': recipes,
-            'category_name': category_name
+            'title': f'{category_name} - category',
+            'category_name': category_name,
         })
