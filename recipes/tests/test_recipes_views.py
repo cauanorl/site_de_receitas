@@ -5,6 +5,7 @@ from .base.base_recipe import RecipeTestBase
 
 
 class RecipeHomeViewTest(RecipeTestBase):
+
     def test_recipe_home_view_class_is_correct(self):
         view = resolve(reverse('recipes:home'))
         self.assertIs(view.func.view_class, views.Home)
@@ -18,7 +19,7 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
 
     def test_recipe_home_template_loads_recipes(self):
-        recipe = self.make_random_recipe()
+        recipe = self.make_random_recipe(is_published=True)
 
         response = self.client.get(reverse('recipes:home'))
         content = response.content.decode('utf-8')
@@ -26,20 +27,21 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.assertTrue(response.context.get('recipes'))
         self.assertContains(response, recipe)
         self.assertIn(recipe.title, content)
-    
+
     def test_recipe_home_template_loads_only_published_recipes(self):
         published_recipe = self.make_random_recipe(
             author_data={'username': 'user1'}, is_published=True)
         not_published_recipe = self.make_random_recipe(
-            author_data={'username': 'user2'}, is_published=False)
+            author_data={'username': 'user2'})
 
         response = self.client.get(reverse('recipes:home'))
-        
+
         self.assertNotContains(response, not_published_recipe)
         self.assertContains(response, published_recipe)
 
 
 class RecipeDetailViewTest(RecipeTestBase):
+
     def test_recipe_detail_view_class_is_correct(self):
         view = resolve(reverse('recipes:detail', kwargs={'id': 1}))
         self.assertIs(view.func.view_class, views.DetailRecipe)
@@ -51,11 +53,11 @@ class RecipeDetailViewTest(RecipeTestBase):
     def test_recipe_detail_template_loads_the_correct_recipe(self):
         needed_title = "This is a detail page - It loads one recipe"
 
-        recipe = self.make_random_recipe(title=needed_title)
+        recipe = self.make_random_recipe(title=needed_title, is_published=True)
         response = self.client.get(reverse('recipes:detail', args=[recipe.id]))
 
         self.assertContains(response, recipe)
-    
+
     def test_recipe_detail_template_does_not_load_unpublished_recipes(self):
         not_published_recipe = self.make_random_recipe(
             author_data={'username': 'user2'}, is_published=False)
@@ -81,11 +83,13 @@ class RecipeFilterByCategoryViewTest(RecipeTestBase):
     def test_recipe_filter_by_category_template_loads_filtered_recipes(self):
         breakfast_recipe = self.make_random_recipe(
             category_name="Breakfast",
-            author_data={'username': 'user1'}
+            author_data={'username': 'user1'},
+            is_published=True,
         )
         dinner_recipe = self.make_random_recipe(
             category_name="Dinner",
-            author_data={'username': 'user2'}
+            author_data={'username': 'user2'},
+            is_published=True,
         )
 
         response = self.client.get(
@@ -96,7 +100,7 @@ class RecipeFilterByCategoryViewTest(RecipeTestBase):
         self.assertContains(response, breakfast_recipe)
         self.assertNotContains(response, dinner_recipe)
         self.assertEqual(response.status_code, 200)
-    
+
     def test_recipe_filter_by_category_template_does_not_load_unpublished_recipes(self):
         breakfast_recipe = self.make_random_recipe(
             category_name="Breakfast",
@@ -107,5 +111,5 @@ class RecipeFilterByCategoryViewTest(RecipeTestBase):
             reverse(
                 'recipes:filter_by_category',
                 kwargs={'category_id': breakfast_recipe.category.id}))
-        
+
         self.assertNotContains(response, breakfast_recipe)

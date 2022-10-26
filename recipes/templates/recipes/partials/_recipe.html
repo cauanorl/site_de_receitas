@@ -90,7 +90,7 @@
   {% else %}
 
     <div class="preparation-steps">
-      {% if recipe.preparation_steps_is_html %}
+      {% if recipe.are_the_preparation_steps_html %}
         {{ recipe.preparation_steps|safe }}
       {% else %}
           {{ recipe.preparation_steps|linebreaksbr }}

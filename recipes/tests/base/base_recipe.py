@@ -8,7 +8,7 @@ class RecipeTestBase(TestCase):
     fake = Faker('pt_BR')
 
     def _make_fake_recipe(self, **recipe_fields: dict[str, str]) -> dict:
-        return {
+        recipe = {
             'title': recipe_fields.get(
                 'title',
                 self.fake.sentence(nb_words=6)
@@ -23,7 +23,7 @@ class RecipeTestBase(TestCase):
             ),
             'preparation_time_unit': recipe_fields.get(
                 'preparation_time_unit',
-                'Minutos'
+                'M'
             ),
             'servings': recipe_fields.get(
                 'servings',
@@ -33,19 +33,22 @@ class RecipeTestBase(TestCase):
                 'servings_unit',
                 "Porção"
             ),
-            'preparation_steps_is_html': recipe_fields.get(
-                'preparation_steps_is_html',
-                False
-            ),
             'preparation_steps': recipe_fields.get(
                 'preparation_steps',
                 self.fake.text(3000)
             ),
-            'is_published': recipe_fields.get(
-                'is_published',
-                True
-            ),
         }
+
+        is_published = recipe_fields.get('is_published')
+        are_the_preparation_steps_html = recipe_fields.get('are_the_preparation_steps_html')
+
+        if is_published:
+            recipe.update({'is_published': is_published})
+
+        if are_the_preparation_steps_html:
+            recipe.update({'are_the_preparation_steps_html': are_the_preparation_steps_html})
+
+        return recipe
 
     def create_test_user(self, *args, **fields: dict[str, str]) -> User:
         return User.objects.create_user(
