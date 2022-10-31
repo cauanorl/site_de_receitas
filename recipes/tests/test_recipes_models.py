@@ -1,11 +1,12 @@
 from django.core.exceptions import ValidationError
+from ..models import Category
 
 from parameterized import parameterized
 
 from .base.base_recipe import RecipeTestBase
 
 
-class RecipeModelsTest(RecipeTestBase):
+class RecipeModelTest(RecipeTestBase):
     def setUp(self) -> None:
         self.recipe = self.make_random_recipe()
         return super().setUp()
@@ -20,8 +21,7 @@ class RecipeModelsTest(RecipeTestBase):
         setattr(self.recipe, field_name, ("a" * (max_length + 1)))
         with self.assertRaises(
                 ValidationError,
-                msg=f"{field_name} didn't raise a ValidationError"
-            ):
+                msg=f"{field_name} didn't raise a ValidationError"):
 
             self.recipe.full_clean()
 
@@ -30,3 +30,19 @@ class RecipeModelsTest(RecipeTestBase):
 
     def test_recipe_is_published_is_false_by_default(self):
         self.assertFalse(self.recipe.is_published)
+
+
+class CategoryModelTest(RecipeTestBase):
+    def setUp(self):
+        self.category = Category.objects.create(name="test category")
+        return super().setUp()
+
+    def test_category_name_field_raises_an_error_if_max_length_is_greater_than_30_chars(self):
+        self.category.name = "a" * 31
+        self.assertRaises(
+            ValidationError,
+            self.category.full_clean,
+        )
+
+    def test_category_string_representation_is_name_field(self):
+        self.assertEqual(str(self.category), self.category.name)
