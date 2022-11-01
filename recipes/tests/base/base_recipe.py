@@ -2,16 +2,19 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from faker import Faker
 from recipes.models import Category, Recipe
+from django.template.defaultfilters import slugify
 
 
 class RecipeTestBase(TestCase):
     fake = Faker('pt_BR')
 
     def _make_fake_recipe(self, **recipe_fields: dict[str, str]) -> dict:
+        title = self.fake.sentence(nb_words=6)
+
         recipe = {
             'title': recipe_fields.get(
                 'title',
-                self.fake.sentence(nb_words=6)
+                title
             ),
             'description': recipe_fields.get(
                 'description',
@@ -37,7 +40,7 @@ class RecipeTestBase(TestCase):
                 'preparation_steps',
                 self.fake.text(3000)
             ),
-            'slug': recipe_fields.get('slug', 'test-slug'),
+            'slug': slugify(title),
         }
 
         is_published = recipe_fields.get('is_published')

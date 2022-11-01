@@ -41,3 +41,18 @@ class FilterRecipesByCategory(TemplateView, View):
             'title': f'{category_name} - category',
             'category_name': category_name,
         })
+
+
+class SearchRecipes(TemplateView, View):
+    template_name = 'recipes/pages/home.html'
+
+    def get(self, request, *args, **kwargs):
+        query = self.request.GET.get('search')
+
+        recipes = Recipe.published.filter(title__icontains=query)
+
+        return self.render_to_response({
+            'recipes': recipes,
+            'title': f'Searching by {query}',
+            'search': self.request.GET.get('search')
+        })

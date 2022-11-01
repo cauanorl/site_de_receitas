@@ -21,7 +21,11 @@
     {% for recipe in recipes %}
       {% include 'recipes/partials/_recipe.html' with recipe=recipe %}
     {% empty %}
-      <h1 style="text-align: center; margin: 10rem 0rem;">Nenhuma receita publicada no momento</h1>
+      {% if search %}
+        <h1 style="text-align: center; margin: 10rem 0rem;">Nenhuma receita para a pesquisa: {{ search }}</h1>
+      {% else %}
+        <h1 style="text-align: center; margin: 10rem 0rem;">Nenhuma receita publicada no momento</h1>
+      {% endif %}
     {% endfor %}
 
   </div>

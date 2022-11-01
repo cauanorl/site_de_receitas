@@ -14,5 +14,11 @@ urlpatterns = [
         _('recipe/category/<int:category_id>/'),
         views.FilterRecipesByCategory.as_view(),
         name="filter_by_category"
+    ),
+    
+    path(
+        _('recipes/search/'),
+        views.SearchRecipes.as_view(),
+        name="search",
     )
 ]
