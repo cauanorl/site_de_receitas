@@ -37,6 +37,7 @@ class RecipeTestBase(TestCase):
                 'preparation_steps',
                 self.fake.text(3000)
             ),
+            'slug': recipe_fields.get('slug', 'test-slug'),
         }
 
         is_published = recipe_fields.get('is_published')
@@ -70,7 +71,6 @@ class RecipeTestBase(TestCase):
     ):
         return Recipe.objects.create(
             **self._make_fake_recipe(**recipe_fields),
-            slug="slug-test",
             cover='https://loremflickr.com/300/300/',
             author=author,
             category=category,
@@ -78,11 +78,18 @@ class RecipeTestBase(TestCase):
 
     def make_random_recipe(
             self,
-            author_data: dict[str, str] = {},
-            category_name: str = "Test category",
+            author_data: dict[str, str] | User = {},
+            category_name: str | Category = "Test category",
             **recipe_fields: dict[str, str]
         ) -> Recipe:
-        author = self.create_test_user(**author_data)
-        category = self.create_category_for_tests(name=category_name)
+
+        author = author_data
+        category = category_name
+
+        if isinstance(author_data, dict):
+            author = self.create_test_user(**author_data)
+
+        if isinstance(category_name, str):
+            category = self.create_category_for_tests(name=category_name)
 
         return self.create_random_recipe(category, author, **recipe_fields)

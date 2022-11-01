@@ -30,9 +30,14 @@ class RecipeHomeViewTest(RecipeTestBase):
 
     def test_recipe_home_template_loads_only_published_recipes(self):
         published_recipe = self.make_random_recipe(
-            author_data={'username': 'user1'}, is_published=True)
+            author_data={'username': 'user1'},
+            is_published=True,
+            slug="teste-1"
+        )
         not_published_recipe = self.make_random_recipe(
-            author_data={'username': 'user2'})
+            author_data={'username': 'user2'},
+            slug='teste-2'
+        )
 
         response = self.client.get(reverse('recipes:home'))
 
@@ -85,11 +90,13 @@ class RecipeFilterByCategoryViewTest(RecipeTestBase):
             category_name="Breakfast",
             author_data={'username': 'user1'},
             is_published=True,
+            slug="teste-1"
         )
         dinner_recipe = self.make_random_recipe(
             category_name="Dinner",
             author_data={'username': 'user2'},
             is_published=True,
+            slug="teste-2"
         )
 
         response = self.client.get(
