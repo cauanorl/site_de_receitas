@@ -13,13 +13,13 @@ class RecipeCommunViewsTests(RecipeTestBase):
         ('recipes:filter_by_category',
          views.FilterRecipesByCategory, {'category_id': 1})
     ])
-    def test_recipe_class_views_is_correct(self, namespace, view_class, extra: dict = {}):
-        view = resolve(reverse(namespace, kwargs={**extra}))
+    def test_recipe_class_views_are_correct(self, namespace, view_class, params: dict = {}):
+        view = resolve(reverse(namespace, kwargs={**params}))
         self.assertIs(view.func.view_class, view_class)
 
     @parameterized.expand([
         ('recipes:home',),
-        ('recipes:search', {'search': 'Valor'}),
+        ('recipes:search', {'q': 'Valor'}),
     ])
     def test_views_return_status_code_200_no_made_recipes(self, namespace, query={}):
         response = self.client.get(reverse(namespace), data={**query})
@@ -29,13 +29,13 @@ class RecipeCommunViewsTests(RecipeTestBase):
         ['recipes:detail', {'id': 1}],
         ['recipes:filter_by_category', {'category_id': 1}],
     ])
-    def test_views_return_status_code_404_no_made_recipes(self, namespace, extra={}):
-        response = self.client.get(reverse(namespace, kwargs={**extra}))
+    def test_views_return_status_code_404_no_made_recipes(self, namespace, params={}):
+        response = self.client.get(reverse(namespace, kwargs={**params}))
         self.assertEqual(response.status_code, 404)
 
     @parameterized.expand([
         ('recipes:home', 'recipes/pages/home.html'),
-        ('recipes:search', 'recipes/pages/home.html', {'search': 'q'}),
+        ('recipes:search', 'recipes/pages/home.html', {'q': 'q'}),
     ])
     def test_views_load_the_correct_templates(self, namespace, template_path, query: dict = {}):
         response = self.client.get(
@@ -77,6 +77,26 @@ class RecipeHomeViewTest(RecipeTestBase):
 
 
 class RecipeSearchViewTest(RecipeTestBase):
+    
+    def test_recipe_search_variable_is_named_correctly(self):
+        query = "Teste"
+        user = self.create_test_user()
+
+        self.make_random_recipe(
+            is_published=True, title=query, author_data=user)
+        self.make_random_recipe(
+            is_published=True, title=f'Etset', author_data=user)
+
+        response = self.client.get(reverse('recipes:search'), data={
+            'q': f'{query}'
+        })
+
+        self.assertEqual(
+            len(response.context.get('recipes')),
+            1,
+            msg=f"Search variable is incorrect."  \
+                f"query string for search must be named as 'q'."
+        )
 
     def test_recipe_search_is_rendering_the_correct_recipes(self):
         user = self.create_test_user()
@@ -91,11 +111,15 @@ class RecipeSearchViewTest(RecipeTestBase):
             )
 
         response = self.client.get(
-            reverse('recipes:search'), data={'search': query})
+            reverse('recipes:search'), data={'q': query})
 
         query_sets = response.context.get('recipes')
 
-        self.assertEqual(len(query_sets), 2)
+        self.assertEqual(
+            len(query_sets),
+            2,
+            msg=f"The view loads more than two recipes."
+        )
 
 
 class RecipeDetailViewTest(RecipeTestBase):

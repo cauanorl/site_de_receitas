@@ -9,5 +9,5 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ['title', 'author']
+    list_display = ['id', 'title', 'author']
     prepopulated_fields = {'slug': ('title',)}
