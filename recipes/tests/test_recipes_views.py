@@ -77,7 +77,7 @@ class RecipeHomeViewTest(RecipeTestBase):
 
 
 class RecipeSearchViewTest(RecipeTestBase):
-    
+
     def test_recipe_search_variable_is_named_correctly(self):
         query = "Teste"
         user = self.create_test_user()
@@ -94,31 +94,41 @@ class RecipeSearchViewTest(RecipeTestBase):
         self.assertEqual(
             len(response.context.get('recipes')),
             1,
-            msg=f"Search variable is incorrect."  \
+            msg=f"Search variable is incorrect."
                 f"query string for search must be named as 'q'."
         )
 
-    def test_recipe_search_is_rendering_the_correct_recipes(self):
+    def test_recipe_search_can_find_recipes_by_title_and_description(self):
         user = self.create_test_user()
-        query = "Teste"
-        test_titles = ['Teste de search', "  TeStE  ", "Fácil search"]
+        expected_recipes_number = 3
+        search_query = "Teste"
+        test_fields = [
+            ('Teste de search', 'Description'),
+            ("  TeStE  ", 'Teste'),
+            ("Fácil search", 'Forbidden'),
+            ('Título', "teste de description")
+        ]
 
-        for title in test_titles:
+        for title, description in test_fields:
             self.make_random_recipe(
                 is_published=True,
                 title=title,
-                author_data=user
+                author_data=user,
+                description=description
             )
 
         response = self.client.get(
-            reverse('recipes:search'), data={'q': query})
+            reverse('recipes:search'), data={'q': search_query})
 
-        query_sets = response.context.get('recipes')
+        query_set = response.context.get('recipes')
 
         self.assertEqual(
-            len(query_sets),
-            2,
-            msg=f"The view loads more than two recipes."
+            len(query_set),
+            expected_recipes_number,
+            msg=f"The view doesn't load {expected_recipes_number} recipes "
+                f"for search '{search_query}'"
+                f"\nExpected: {expected_recipes_number}"
+                f"\nGot: {len(query_set)}"
         )
 
     def test_recipe_search_term_is_on_page_title_and_escaped(self):
@@ -130,6 +140,7 @@ class RecipeSearchViewTest(RecipeTestBase):
             f'Searching for &quot;{query}&quot;',
             response.content.decode('utf-8')
         )
+
 
 class RecipeDetailViewTest(RecipeTestBase):
 
