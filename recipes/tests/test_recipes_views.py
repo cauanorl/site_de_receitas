@@ -121,6 +121,15 @@ class RecipeSearchViewTest(RecipeTestBase):
             msg=f"The view loads more than two recipes."
         )
 
+    def test_recipe_search_term_is_on_page_title_and_escaped(self):
+        query = "Teste"
+        url = reverse('recipes:search')
+        response = self.client.get(url, data={'q': query})
+
+        self.assertIn(
+            f'Searching for &quot;{query}&quot;',
+            response.content.decode('utf-8')
+        )
 
 class RecipeDetailViewTest(RecipeTestBase):
 

@@ -3,6 +3,7 @@ from django.http import Http404
 from django.views.generic.base import TemplateView, View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.db.models import Q
 
 from .models import Category, Recipe
 
@@ -12,6 +13,7 @@ class Home(ListView):
     queryset = Recipe.published.all()
     extra_context = {'title': 'Home'}
     context_object_name = 'recipes'
+    paginate_by = 9
 
 
 class DetailRecipe(DetailView):
@@ -23,7 +25,7 @@ class DetailRecipe(DetailView):
     def get_object(self):
         obj = super().get_object()
         if not obj.is_published == True:
-            raise Http404
+            raise Http404()
 
         return obj
 
@@ -43,19 +45,29 @@ class FilterRecipesByCategory(TemplateView, View):
         })
 
 
-class SearchRecipes(TemplateView, View):
+class SearchRecipes(ListView):
     template_name = 'recipes/pages/home.html'
+    queryset = Recipe.published.all()
+    paginate_by = 9
+    context_object_name = 'recipes'
 
-    def get(self, request, *args, **kwargs):
+    def get_queryset(self):
+        qs = super().get_queryset()
         query = self.request.GET.get('q', '').strip()
 
         if not query:
-            return redirect('recipes:home')
-        
-        recipes = Recipe.published.filter(title__icontains=query)
+            return qs
 
-        return self.render_to_response({
-            'recipes': recipes,
-            'title': f'Searching for {query}',
-            'search': query
-        })
+        self.extra_context = {
+            'title': f'Searching for "{query}"',
+            'search': query,
+        }
+
+        return qs.filter(
+            Q(title__icontains=query) | Q(description__icontains=query),
+        )
+    
+    def get(self, *args, **kwargs):
+        if not self.request.GET.get('q'):
+            return redirect('recipes:home')
+        return super().get(*args, **kwargs)
