@@ -1,3 +1,5 @@
+from django.db.models import QuerySet
+from django.http import HttpResponseRedirect
 from django.urls import resolve, reverse
 from parameterized import parameterized
 
@@ -75,6 +77,38 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.assertNotContains(response, not_published_recipe)
         self.assertContains(response, published_recipe)
 
+    def test_recipe_home_is_paginated(self):
+        url = reverse('recipes:home')
+        user = self.create_test_user()
+
+        for n in range(10):
+            self.make_random_recipe(
+                author_data=user,
+                title=f"recipe {n}",
+                is_published=True,
+            )
+
+        response = self.client.get(url)
+        page_obj = response.context.get('page_obj')
+
+        self.assertEqual(page_obj.paginator.num_pages, 2)
+
+    def test_recipe_home_is_paginated_by_nine_recipes(self):
+        url = reverse('recipes:home')
+        user = self.create_test_user()
+
+        for n in range(10):
+            self.make_random_recipe(
+                author_data=user,
+                title=f"recipe {n}",
+                is_published=True,
+            )
+
+        response = self.client.get(url)
+        page_obj = response.context.get('page_obj')
+
+        self.assertEqual(len(page_obj), 9)
+
 
 class RecipeSearchViewTest(RecipeTestBase):
 
@@ -141,6 +175,33 @@ class RecipeSearchViewTest(RecipeTestBase):
             response.content.decode('utf-8')
         )
 
+    def test_recipe_search_is_paginated(self):
+        url = reverse('recipes:search')
+        user = self.create_test_user()
+
+        for n in range(10):
+            self.make_random_recipe(
+                author_data=user,
+                title=f"recipe {n}",
+                is_published=True,
+            )
+
+        response = self.client.get(url, data={'q': 'recipe'})
+        page_obj = response.context.get('page_obj')
+
+        self.assertEqual(page_obj.paginator.num_pages, 2)
+
+    def test_recipe_search_context_object_name_is_correct(self):
+        response = self.client.get(reverse('recipes:search'), data={'q': 'r'})
+
+        self.assertIsInstance(response.context.get('recipes'), QuerySet)
+
+    def test_recipe_search_redirects_to_home_page_if_no_query(self):
+        res = self.client.get(reverse('recipes:search'), data={'q': ''})
+
+        self.assertEqual(res.status_code, 302)
+        self.assertIsInstance(res, HttpResponseRedirect)
+
 
 class RecipeDetailViewTest(RecipeTestBase):
 
@@ -158,6 +219,15 @@ class RecipeDetailViewTest(RecipeTestBase):
 
         response = self.client.get(
             reverse('recipes:detail', args=[not_published_recipe.id]))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_recipe_detail_raises_a_http_404_if_recipe_is_not_published(self):
+        recipe = self.make_random_recipe()
+
+        response = self.client.get(
+            reverse('recipes:detail', kwargs={'id': recipe.id})
+        )
 
         self.assertEqual(response.status_code, 404)
 
