@@ -33,7 +33,7 @@
   {% if page_obj %}
     <div class="main-content container" style="text-align:center;">
 
-      {% if page_obj.has_previous %}
+      {% comment %} {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}{% if search %}&q={{search}}{% endif %}">{{ page_obj.previous_page_number }}</a>
       {% endif %}
 
@@ -41,7 +41,23 @@
 
       {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}{% if search %}&q={{search}}{% endif %}">{{ page_obj.next_page_number }}</a>
-      {% endif %}
+      {% endif %} {% endcomment %}
+
+      {% for page in page_obj.paginator %}
+
+        {% with page_obj.number|add:"-3" as min_page and page_obj.number|add:3 as max_page %}
+
+          {% if max_page >= page.number and min_page <= page.number %}
+            {% if page.number == page_obj.number %}
+              {{ page.number }}
+            {% else %}
+              <a href="?page={{ page.number }}{% if search %}&q={{search}}{% endif %}">{{ page.number }}</a>
+            {% endif %}
+          {% endif %}
+          
+        {% endwith %}
+
+      {% endfor  %}
     <div>
   {% endif %}
 
