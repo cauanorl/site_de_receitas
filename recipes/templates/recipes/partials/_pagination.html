@@ -1,0 +1,11 @@
+<div class="main-content container" style="text-align:center;">
+  {% for page in page_range.pagination %}
+
+    {% if page == page_range.current_page %}
+      {{ page_range.current_page }}
+    {% else %}
+      <a href="?page={{ page }}{% if search %}&q={{search}}{% endif %}">{{ page }}</a>
+    {% endif %}
+
+  {% endfor  %}
+<div>
