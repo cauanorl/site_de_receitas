@@ -1,11 +1,42 @@
-<div class="main-content container" style="text-align:center;">
-  {% for page in page_range.pagination %}
+{% if page_obj %}
+  <div class="main-content container pagination" style="text-align:center;">
+    <div class="pagination-content">
 
-    {% if page == page_range.current_page %}
-      {{ page_range.current_page }}
-    {% else %}
-      <a href="?page={{ page }}{% if search %}&q={{search}}{% endif %}">{{ page }}</a>
-    {% endif %}
+      {% if page_range.first_page_out_of_range %}
+        <a
+          href="?page=1{% if search %}&q={{ search }}{% endif %}"
+          class="page-link page-item"
+        >
+          1
+        </a>
+        <span class="page-item">...</span>
+      {% endif %}
 
-  {% endfor  %}
-<div>
+      {% for page in page_range.pagination %}
+
+        {% if page == page_range.current_page %}
+          <span class="current-page">{{ page_range.current_page }}</span>
+        {% else %}
+          <a
+            href="?page={{ page }}{% if search %}&q={{search}}{% endif %}"
+            class="page-link page-item"
+          >
+            {{ page }}
+          </a>
+        {% endif %}
+  
+      {% endfor  %}
+
+      {% if page_range.last_page_out_of_range %}
+        <span class="page-item">...</span>
+        <a
+          href="?page={{ page_range.total_pages }}{% if search %}&q={{ search }}{% endif %}"
+          class="page-link page-item"
+        >
+          {{ page_range.total_pages }}
+        </a>
+      {% endif %}
+
+    </div>
+  <div>
+{% endif %}

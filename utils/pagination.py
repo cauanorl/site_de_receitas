@@ -2,6 +2,11 @@ import math
 
 
 def make_pagination_range(page_range, number_of_pages, current_page):
+    if current_page > max(page_range):
+        current_page = max(page_range)
+    elif current_page < min(page_range):
+        current_page = min(page_range)
+
     total_pages = len(page_range)
     middle_range = math.ceil(number_of_pages / 2)
     start_range = current_page - middle_range

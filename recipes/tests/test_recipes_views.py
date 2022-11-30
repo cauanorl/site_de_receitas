@@ -2,6 +2,7 @@ from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
 from django.urls import resolve, reverse
 from parameterized import parameterized
+from django.core.paginator import Page
 
 from .. import views
 from .base.base_recipe import RecipeTestBase
@@ -194,7 +195,12 @@ class RecipeSearchViewTest(RecipeTestBase):
     def test_recipe_search_context_object_name_is_correct(self):
         response = self.client.get(reverse('recipes:search'), data={'q': 'r'})
 
-        self.assertIsInstance(response.context.get('recipes'), QuerySet)
+        obj = response.context.get('recipes')
+
+        if isinstance(obj, Page):
+            obj = obj.object_list
+
+        self.assertIsInstance(obj, QuerySet)
 
     def test_recipe_search_redirects_to_home_page_if_no_query(self):
         res = self.client.get(reverse('recipes:search'), data={'q': ''})

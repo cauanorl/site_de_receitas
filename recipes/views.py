@@ -23,7 +23,7 @@ class AbstractPaginationListView(ListView):
 
         page_obj = paginator.get_page(current_page)
         page_range = make_pagination_range(
-            page_range=range(1, paginator.num_pages + 1),
+            page_range=paginator.page_range,
             number_of_pages=4,
             current_page=current_page
         )
