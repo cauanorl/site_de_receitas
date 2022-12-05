@@ -1,8 +1,12 @@
 from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
 from django.urls import resolve, reverse
-from parameterized import parameterized
 from django.core.paginator import Page
+
+from unittest.mock import patch
+
+from parameterized import parameterized
+
 
 from .. import views
 from .base.base_recipe import RecipeTestBase
@@ -98,17 +102,20 @@ class RecipeHomeViewTest(RecipeTestBase):
         url = reverse('recipes:home')
         user = self.create_test_user()
 
-        for n in range(10):
+        for n in range(9):
             self.make_random_recipe(
                 author_data=user,
                 title=f"recipe {n}",
                 is_published=True,
             )
 
-        response = self.client.get(url)
+        with patch('recipes.views.PER_PAGE', new=3):
+            response = self.client.get(url)
+
         page_obj = response.context.get('page_obj')
 
-        self.assertEqual(len(page_obj), 9)
+        self.assertEqual(len(page_obj), 3)
+        self.assertEqual(page_obj.paginator.num_pages, 3)
 
 
 class RecipeSearchViewTest(RecipeTestBase):
