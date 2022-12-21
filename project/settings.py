@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     
     # My Apps
     'recipes',
+    'authors'
 ]
 
 MIDDLEWARE = [
@@ -143,5 +144,9 @@ MEDIA_URL = "media/"
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
-    messages.ERROR: ''
+    messages.ERROR: 'message-error',
+    messages.WARNING: 'message-warning',
+    messages.SUCCESS: 'message-success',
+    messages.INFO: 'message-info',
+    messages.DEBUG: 'message-dubug',
 }

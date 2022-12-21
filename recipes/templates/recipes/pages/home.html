@@ -10,8 +10,10 @@
 
 {% block content %}
 
+  {% include 'recipes/partials/_messages.html' %}
+
   {% if category_name %}
-    <div class="container" style="text-align:center;">
+    <div class="container center">
       <h2>Filter by: {{ category_name }}</h2>
     </div>
   {% endif %}

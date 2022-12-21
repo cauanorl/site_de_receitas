@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, redirect
 
 from django.http import Http404
 
-from django.views.generic.base import TemplateView, View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
@@ -21,7 +20,10 @@ class AbstractPaginationListView(ListView):
     queryset = Recipe.published.all()
     extra_context = {}
 
-    def set_pagination(self, queryset, context_object_name='object', number_of_pages=4, per_page=9,*args, **kwargs):
+    def set_pagination(
+            self, queryset, context_object_name='object',
+            number_of_pages=4, per_page=9, *args, **kwargs
+        ):
         paginator = Paginator(queryset, per_page)
         current_page = int(self.request.GET.get('page', 1))
 

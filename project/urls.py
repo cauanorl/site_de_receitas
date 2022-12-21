@@ -23,7 +23,7 @@ from django.utils.translation import gettext as _
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('recipes.urls', namespace="recipes")),
-    # path(_('recipes/'), include('recipes.urls', namespace="recipes"))
+    path(_('authors/'), include('authors.urls', namespace="authors"))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

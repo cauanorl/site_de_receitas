@@ -1,0 +1,11 @@
+{% if messages %}
+  <div class="main-content center container" style="padding-top: 0.5rem;">
+
+    {% for message in messages %}
+      <h2 class="{{ message.tags }} message">
+        {{ message }}
+      </h2>
+    {% endfor %}
+
+  </div>
+{% endif %}

@@ -65,6 +65,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-headings)
 }
 
+.center {
+  text-align: center;
+}
+
 .container {
   max-width: 144.0rem;
   margin: 0 auto;
@@ -89,9 +93,11 @@ h1, h2, h3, h4, h5, h6 {
   min-width: 100%;
 }
 
-/* ****************** *\
-         Header
-\* ****************** */
+/*
+
+  * Header
+
+*/
 
 .main-header-container {
   background: var(--primary-dark-color);
@@ -114,9 +120,11 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
 }
 
-/* ****************** *\
-   Search input form 
-\* ****************** */
+/*
+
+  * Search input form 
+
+*/
 
 .search-form:focus-within {
   border-color: var(--primary-color);
@@ -154,9 +162,11 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--color-gray-0);
   }
 
-/* ****************** *\
-        Footer
-\* ****************** */
+/*
+
+  * Footer
+
+*/
 
 footer {
   background: var(--primary-dark-color);
@@ -167,3 +177,49 @@ footer {
     display: flex;
     justify-content: space-between;
   }
+
+
+/*
+
+  * Messages Styles
+
+*/
+
+.message {
+  margin-bottom: .7rem;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-dark-text);
+  background: var(--color-gray-2);
+  color: var(--color-dark-text);
+}
+
+.message-error {
+  border: 1px solid var(--color-error-dark);
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
+}
+
+.message-success {
+  border: 1px solid var(--color-success-dark);
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.message-info {
+  border: 1px solid var(--color-info-dark);
+  background: var(--color-info-light);
+  color: var(--color-info-dark);
+}
+
+.message-warning {
+  border: 1px solid var(--color-warning-dark);
+  background: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}
+
+.message-debug {
+  border: 1px solid var(--color-debug-dark);
+  background: var(--color-debug-light);
+  color: var(--color-debug-dark);
+}
