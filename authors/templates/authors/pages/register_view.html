@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block head %}
 
+  <link rel="stylesheet" href="{% static 'authors/css/base.css' %}">
   <title>Sign up</title>
 
 {% endblock %}
@@ -20,20 +22,26 @@
       <div class="form-content form-content-grid">
         {% for field in form %}
 
-          <div class="form-group">
+          <div class="form-group {% if field.errors %}form-error{% endif %}">
 
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field }}<br>
-          
+
             {{ field.errors }}
           </div>
           
         {% endfor %}
       </div>
 
-      <button type="submit">
-        Sign up
-      </button>
+      <div class="form-content form-content-grid">
+        <div class="form-group">
+
+          <button type="submit">
+            Sign up
+          </button>
+
+        </div>
+      </div>
 
     </form>
   </div>

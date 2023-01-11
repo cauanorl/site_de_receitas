@@ -1,21 +1,23 @@
 from django.views.generic.base import View, TemplateView
 from .forms import RegisterForm
+from django.shortcuts import redirect
 
 
 # Create your views here.
 class RegisterView(TemplateView, View):
     template_name = 'authors/pages/register_view.html'
 
-    def get(self, request, *args, **kwargs):
-        form = RegisterForm()
+    def setup(self, *args, **kwargs) -> None:
+        super().setup(*args, **kwargs)
+        self.form = RegisterForm(self.request.session.get('register_post'))
 
+    def get(self, request, *args, **kwargs):
         return self.render_to_response({
-            'form': form,
+            'form': self.form,
         })
     
     def post(self, request, *args, **kwargs):
-        form = RegisterForm(data=request.POST)
+        self.request.session['register_post'] = request.POST
+        self.request.session.save()
 
-        return self.render_to_response({
-            'form': form            
-        })
+        return redirect('authors:register')
