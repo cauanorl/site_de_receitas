@@ -1,0 +1,13 @@
+<div class="form-content form-content-grid">
+  {% for field in form %}
+
+    <div class="form-group {% if field.errors %}form-error{% endif %}">
+
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}<br>
+
+      {{ field.errors }}
+    </div>
+    
+  {% endfor %}
+</div>

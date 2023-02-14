@@ -34,3 +34,13 @@ class RegisterView(TemplateView, View):
             return redirect('recipes:home')
 
         return self.render_to_response({'form': form})
+
+
+class LoginView(TemplateView, View):
+    template_name = 'authors/pages/login.html'
+
+    def get(self, *args, **kwargs):
+        return self.render_to_response({})
+    
+    def post(self, *args, **kwargs):
+        return self.render_to_response({})
