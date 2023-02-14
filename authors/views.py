@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.models import AbstractUser
 
 from .forms import RegisterForm
 
@@ -25,7 +26,7 @@ class RegisterView(TemplateView, View):
         form = RegisterForm(data=self.request.POST)
 
         if form.is_valid():
-            user = form.save(commit=False)
+            user: AbstractUser = form.save(commit=False)
             user.set_password(self.request.POST.get('password'))
             user.save()
             messages.success(self.request, _("Sua conta foi criada com sucesso"))

@@ -78,7 +78,8 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
     ])
     def test_fields_max_length(self, field, msg, email=False):
         MAX_LENGTH = 150
-        data = 'a' * (MAX_LENGTH + 1) if not email else ('a' * 150) + ('@email.com')
+        data = 'a' * (MAX_LENGTH + 1) if not email else ('a' *
+                                                         150) + ('@email.com')
 
         self.field_has_the_expected_error(
             field,
@@ -106,7 +107,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         password_without_numbers = 'testepassword'
         expected_error = 'A senha deve conter letras e números'
         failed_test_msg = (
-            f"Password '{password_without_numbers}' " 
+            f"Password '{password_without_numbers}' "
             f"shouldn't have been passed, but it was")
 
         fields_to_update = {
@@ -162,18 +163,18 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         )
 
     def test_correct_password(self):
-        correct_password = 'user12345678'
-        self.form_data['password'] = correct_password
-        self.form_data['password2'] = correct_password
-        response_correct = self.client.post(
+        password = 'user12345678'
+        self.form_data['password'] = password
+        self.form_data['password2'] = password
+        response = self.client.post(
             self.register_url,
-            data=self.form_data
+            data=self.form_data,
         )
-        correct_form: RegisterForm = response_correct.context.get('form')
-        errors = correct_form.errors.get('password')
-        self.assertTrue(
-            errors is None,
-            msg=f"Password '{correct_password}' didn't pass, "
+
+        self.assertEqual(
+            response.status_code,
+            302,
+            msg=f"Password '{password}' didn't pass, "
                 f"but should have been passed"
         )
 
@@ -192,10 +193,37 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         }
 
         self.field_has_the_expected_error(
-            field,
+            field,  
             fields_to_update,
             expected_error,
             failed_test_msg
+        )
+
+    def test_email_field_must_be_unique(self):
+        for _ in range(2):
+            response = self.client.post(self.register_url, data=self.form_data)
+
+        errors_list = response.context.get('form').errors.get('email')
+        self.assertIn(
+            'Este email já foi cadastrado',
+            errors_list,
+        )
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Email shouldn't have been passed, but it was"
+        )
+
+    def test_user_created_can_login(self):
+        self.client.post(self.register_url, data=self.form_data)
+        is_authenticated = self.client.login(
+            username=self.form_data['username'],
+            password=self.form_data['password'],
+        )
+
+        self.assertTrue(
+            is_authenticated,
+            f"Login failed to user: {self.form_data['username']}"
         )
 
     def field_has_the_expected_error(

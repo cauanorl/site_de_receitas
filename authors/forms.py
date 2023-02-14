@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
+from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -14,8 +15,12 @@ class RegisterForm(forms.ModelForm):
             'email': _('E-mail'),
         }
         fields = [
+            'first_name',
             'last_name',
-            'email'
+            'username',
+            'email',
+            'password',
+            'password2'
         ]
 
     username = forms.CharField(
@@ -82,8 +87,12 @@ class RegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.required_fields = [
+            'first_name',
             'last_name',
+            'username',
             'email',
+            'password',
+            'password2',
         ]
         self.add_placeholder({
             'last_name': _('Digite seu último nome'),
@@ -97,6 +106,16 @@ class RegisterForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
+        email_already_exists = User.objects.filter(email=email).exists()
+
+        if email_already_exists:
+            self.add_error(
+                'email',
+                ValidationError(
+                    _('Este email já foi cadastrado'),
+                    code="invalid"
+                )
+            )
 
         if len(email) > 150:
             self.add_error(
@@ -106,6 +125,8 @@ class RegisterForm(forms.ModelForm):
                     code="max_length"
                 )
             )
+        
+        return email
 
     def clean_password(self, *args, **kwargs):
         password: str = self.cleaned_data.get('password')
