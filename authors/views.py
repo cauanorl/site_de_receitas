@@ -2,11 +2,12 @@ from django.views.generic.base import View, TemplateView
 from django.utils.translation import gettext as _
 from django.shortcuts import redirect
 
-from django.contrib import messages
-from django.contrib.auth import login
+from django import forms
+from django.contrib import messages, auth
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 
 
 class RegisterView(TemplateView, View):
@@ -30,7 +31,7 @@ class RegisterView(TemplateView, View):
             user.set_password(self.request.POST.get('password'))
             user.save()
             messages.success(self.request, _("Sua conta foi criada com sucesso"))
-            login(self.request, user)
+            auth.login(self.request, user)
             return redirect('recipes:home')
 
         return self.render_to_response({'form': form})
@@ -40,7 +41,35 @@ class LoginView(TemplateView, View):
     template_name = 'authors/pages/login.html'
 
     def get(self, *args, **kwargs):
-        return self.render_to_response({})
+        form = LoginForm()
+        if self.request.user.is_authenticated:
+            return redirect('recipes:home')
+        return self.render_to_response({'form': form})
     
     def post(self, *args, **kwargs):
-        return self.render_to_response({})
+        form = LoginForm(self.request.POST)
+
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = auth.authenticate(
+                self.request, username=username, password=password)
+
+            if user:
+                auth.login(self.request, user)
+                return redirect('recipes:home')
+
+            if not User.objects.filter(username=username).exists():
+                form.add_error(
+                    'username',
+                    forms.ValidationError(
+                        "Esse nome de usuário não existe", code="invalid"))
+            else:
+                form.add_error(
+                    'password',
+                    forms.ValidationError(
+                        "Sua senha está incorreta", code="invalid"))
+        else:
+            messages.error(self.request, 'Erro ao validar o formulário')
+
+        return self.render_to_response({'form': form})
