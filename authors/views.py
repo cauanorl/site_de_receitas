@@ -1,11 +1,12 @@
 from django.views.generic.base import View, TemplateView
 from django.utils.translation import gettext as _
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 
 from django import forms
 from django.contrib import messages, auth
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import RegisterForm, LoginForm
 
@@ -73,3 +74,13 @@ class LoginView(TemplateView, View):
             messages.error(self.request, 'Erro ao validar o formulário')
 
         return self.render_to_response({'form': form})
+
+
+class LogoutView(LoginRequiredMixin, View):
+    login_url = "authors:login"
+    redirect_field_name = 'next'
+
+    def get(self, *args, **kwargs):
+        auth.logout(self.request)
+
+        return redirect("recipes:home")
