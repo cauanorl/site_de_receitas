@@ -84,14 +84,7 @@ class RecipeHomeViewTest(RecipeTestBase):
 
     def test_recipe_home_is_paginated(self):
         url = reverse('recipes:home')
-        user = self.create_test_user()
-
-        for n in range(10):
-            self.make_random_recipe(
-                author_data=user,
-                title=f"recipe {n}",
-                is_published=True,
-            )
+        self.make_recipes()
 
         response = self.client.get(url)
         page_obj = response.context.get('page_obj')
@@ -100,14 +93,7 @@ class RecipeHomeViewTest(RecipeTestBase):
 
     def test_recipe_home_is_paginated_by_nine_recipes(self):
         url = reverse('recipes:home')
-        user = self.create_test_user()
-
-        for n in range(9):
-            self.make_random_recipe(
-                author_data=user,
-                title=f"recipe {n}",
-                is_published=True,
-            )
+        self.make_recipes()
 
         with patch('recipes.views.PER_PAGE', new=3):
             response = self.client.get(url)
@@ -185,14 +171,7 @@ class RecipeSearchViewTest(RecipeTestBase):
 
     def test_recipe_search_is_paginated(self):
         url = reverse('recipes:search')
-        user = self.create_test_user()
-
-        for n in range(10):
-            self.make_random_recipe(
-                author_data=user,
-                title=f"recipe {n}",
-                is_published=True,
-            )
+        self.make_recipes()
 
         response = self.client.get(url, data={'q': 'recipe'})
         page_obj = response.context.get('page_obj')

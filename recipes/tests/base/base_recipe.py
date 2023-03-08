@@ -5,7 +5,7 @@ from recipes.models import Category, Recipe
 from django.template.defaultfilters import slugify
 
 
-class RecipeTestBase(TestCase):
+class RecipeMixin:
     fake = Faker('pt_BR')
 
     def _make_fake_recipe(self, **recipe_fields: dict[str, str]) -> dict:
@@ -54,7 +54,25 @@ class RecipeTestBase(TestCase):
 
         return recipe
 
-    def create_test_user(self, *args, **fields: dict[str, str]) -> User:
+    def make_recipes(self, num_of_recipes: int = 10) -> list[Recipe]:
+        recipes = []
+
+        for n in range(num_of_recipes):
+            user = self.create_test_user(
+                username=f"TestUser{n * 17}",
+                email=f"user{n * 17}@email.com"
+            )
+
+            recipe = self.make_random_recipe(
+                author_data=user,
+                title=f"recipe {n}",
+                is_published=True,
+            )
+            recipes.append(recipe)
+        
+        return recipes
+
+    def create_test_user(self, **fields: dict[str, str]) -> User:
         return User.objects.create_user(
             first_name=fields.get('first_name', "First"),
             last_name=fields.get("last_name", "Last"),
@@ -96,3 +114,7 @@ class RecipeTestBase(TestCase):
             category = self.create_category_for_tests(name=category_name)
 
         return self.create_random_recipe(category, author, **recipe_fields)
+
+
+class RecipeTestBase(TestCase, RecipeMixin):
+    ...
