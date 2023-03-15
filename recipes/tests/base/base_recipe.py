@@ -69,7 +69,7 @@ class RecipeMixin:
                 is_published=True,
             )
             recipes.append(recipe)
-        
+
         return recipes
 
     def create_test_user(self, **fields: dict[str, str]) -> User:

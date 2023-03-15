@@ -93,7 +93,7 @@ class RecipeHomeViewTest(RecipeTestBase):
 
     def test_recipe_home_is_paginated_by_nine_recipes(self):
         url = reverse('recipes:home')
-        self.make_recipes()
+        self.make_recipes(9)
 
         with patch('recipes.views.PER_PAGE', new=3):
             response = self.client.get(url)
