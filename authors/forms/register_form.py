@@ -29,7 +29,7 @@ class RegisterForm(forms.ModelForm):
         max_length=150,
         min_length=6,
         error_messages={
-            'required': 'Este campo é obrigatório',
+            'required': ('Nome de usuário não pode estar em branco'),
             'max_length': _('Nome de usuário deve conter no máximo 150 caracteres'),
             'min_length': _('Nome de usuário deve conter mais de 6 caracteres'),
         },
@@ -44,7 +44,7 @@ class RegisterForm(forms.ModelForm):
         max_length=150,
         min_length=2,
         error_messages={
-            'required': _('Este campo é obrigatório'),
+            'required': _('Nome não pode estar em branco'),
             'min_length': _('Primeiro nome deve conter mais que 2 caracteres'),
             'max_length': _('Nome deve conter no máximo 150 caracteres'),
         },
@@ -59,7 +59,7 @@ class RegisterForm(forms.ModelForm):
         max_length=150,
         min_length=2,
         error_messages={
-            'required': _('Este campo é obrigatório'),
+            'required': _('Sobrenome não pode estar em branco'),
             'min_length': _('Sobrenome deve conter mais que 2 caracteres'),
             'max_length': _('Sobrenome deve conter no máximo 150 caracteres'),
         },
@@ -71,6 +71,7 @@ class RegisterForm(forms.ModelForm):
     password = forms.CharField(
         max_length=200,
         label=_('Senha'),
+        error_messages={"required": _("Senha não pode estar em branco")},
         widget=forms.PasswordInput(attrs={
             'placeholder': _('Digite uma senha'),
         })
@@ -79,6 +80,7 @@ class RegisterForm(forms.ModelForm):
     password2 = forms.CharField(
         max_length=200,
         label=_('Repetir senha'),
+        error_messages={"required": _("As senhas não conferem")},
         widget=forms.PasswordInput(attrs={
             'placeholder': _('Repita a senha'),
         })
@@ -104,9 +106,34 @@ class RegisterForm(forms.ModelForm):
             field_widget = self.fields.get(field).widget
             field_widget.attrs['placeholder'] = placeholder_value
 
+    def clean_first_name(self):
+        first_name: str | None = self.cleaned_data.get("first_name")
+
+        return self.strip_string(first_name)
+
+    def clean_last_name(self):
+        last_name: str | None = self.cleaned_data.get("last_name")
+
+        return self.strip_string(last_name)
+
+    def clean_username(self):
+        username: str | None = self.cleaned_data.get('username')
+
+        return self.strip_string(username)
+
     def clean_email(self):
-        email = self.cleaned_data.get('email')
+        email: str | None = self.cleaned_data.get('email')
         email_already_exists = User.objects.filter(email=email).exists()
+
+        email = self.strip_string(email)
+
+        if email == '':
+            self.add_error(
+                'email',
+                ValidationError(
+                    _('Email não pode estar em branco'),
+                    code="required"
+                ))
 
         if email_already_exists:
             self.add_error(
@@ -125,11 +152,13 @@ class RegisterForm(forms.ModelForm):
                     code="max_length"
                 )
             )
-        
+
         return email
 
     def clean_password(self, *args, **kwargs):
-        password: str = self.cleaned_data.get('password')
+        password: str | None = self.cleaned_data.get('password')
+
+        password = self.strip_string(password)
 
         match = re.match(
             r'(?=^.{8,}$)((?=.*\d)(?=.*\w+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$',
@@ -156,8 +185,10 @@ class RegisterForm(forms.ModelForm):
         return password
 
     def clean_password2(self, *args, **kwargs):
-        password = self.cleaned_data.get('password')
-        password2 = self.cleaned_data.get('password2')
+        password: str = self.cleaned_data.get('password')
+        password2: str = self.cleaned_data.get('password2')
+
+        password2 = self.strip_string(password2)
 
         if password != password2:
             self.add_error(
@@ -165,20 +196,16 @@ class RegisterForm(forms.ModelForm):
                 ValidationError(
                     _('As senhas não conferem'),
                     code="invalid"
-                ))
+                )
+            )
 
         return password2
 
-    def clean(self):
-        for field_name in self.required_fields:
-            field = self.cleaned_data.get(field_name)
-            field = '' if field is None else field
-            if len(field) <= 1:
-                self.add_error(
-                    field_name,
-                    ValidationError(
-                        _('Este campo é obrigatório'),
-                        code='required'
-                    ))
+    @staticmethod
+    def strip_string(string: str | None):
+        if string is None:
+            string = ""
+        else:
+            string = string.strip()
 
-        return super().clean()
+        return string
