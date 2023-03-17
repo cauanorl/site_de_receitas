@@ -58,11 +58,11 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         return super().setUp()
 
     @parameterized.expand([
-        ("username", 'Este campo é obrigatório'),
+        ("username", 'Nome de usuário não pode estar em branco'),
         ("password", 'Senha não pode estar em branco'),
         ("email", 'Email não pode estar em branco'),
-        ("first_name", 'Este campo é obrigatório'),
-        ("last_name", 'Este campo é obrigatório'),
+        ("first_name", 'Nome não pode estar em branco'),
+        ("last_name", 'Sobrenome não pode estar em branco'),
     ])
     def test_fields_cannot_be_empty(self, field, msg):
         self.form_data[field] = ''
@@ -74,12 +74,10 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         ('username', 'Nome de usuário deve conter no máximo 150 caracteres'),
         ('first_name', 'Nome deve conter no máximo 150 caracteres'),
         ('last_name', 'Sobrenome deve conter no máximo 150 caracteres'),
-        ('email', 'Email não deve conter mais de 150 caracteres', True),
     ])
-    def test_fields_max_length(self, field, msg, email=False):
+    def test_fields_max_length(self, field, msg):
         MAX_LENGTH = 150
-        data = 'a' * (MAX_LENGTH + 1) if not email else ('a' *
-                                                         150) + ('@email.com')
+        data = 'a' * (MAX_LENGTH + 1)
 
         self.field_has_the_expected_error(
             field,

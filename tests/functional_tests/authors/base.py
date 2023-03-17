@@ -20,10 +20,3 @@ class AuthorsBaseTest(StaticLiveServerTestCase):
             f'//*[@id="{element_id}"]'
         )
         return element
-
-    def fill_form_dummy_data(self, form: WebElement) -> None:
-        fields = form.find_elements(By.TAG_NAME, "input")
-
-        for field in fields:
-            if field.is_displayed():
-                field.send_keys(" " * 20)

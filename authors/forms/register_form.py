@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
 from django import forms
+from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 
 import re
@@ -66,6 +67,15 @@ class RegisterForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'placeholder': _('Digite seu primeiro nome'),
         })
+    )
+
+    email = forms.EmailField(
+        label="E-mail",
+        required=True,
+        max_length=150,
+        validators=[EmailValidator(message=_("Formato de email inválido"))],
+        widget=forms.EmailInput(attrs={"placeholder": "Digite seu E-mail"}),
+        error_messages={"required": "Email não pode estar em branco"}
     )
 
     password = forms.CharField(
@@ -152,6 +162,7 @@ class RegisterForm(forms.ModelForm):
                     code="max_length"
                 )
             )
+
 
         return email
 
