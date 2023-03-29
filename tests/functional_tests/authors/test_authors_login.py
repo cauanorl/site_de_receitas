@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 from django.contrib.auth.models import User
+from django.contrib import auth
 from django.urls import reverse
 
 from .base import AuthorsBaseTest
@@ -20,8 +21,19 @@ class AuthorsLoginTest(AuthorsBaseTest):
 
         return form
 
-    # TODO: create a functional test: Usuário não pode fazer login se já estiver logado (New Test)
-    # def test_user_cannot_log_in__if_user_is_already_logged_in(self): ...
+    def test_user_cannot_log_in_if_user_is_already_logged_in(self):
+        string_password = "P@ssw0rd"
+        self.browser.get(self.live_server_url + reverse("authors:login"))
+
+        user = User.objects.create_user(username="MyTestUser", password=string_password)
+
+        self.fill_out_and_submit_login_form(user.username, string_password)
+
+        self.browser.get(self.live_server_url + reverse("authors:login"))
+        self.assertIn(
+            "Nenhuma receita publicada no momento",
+            self.browser.find_element(By.TAG_NAME, "body").text
+        )
 
     def fill_out_and_submit_login_form(self, username, password):
         form = self.select_form()

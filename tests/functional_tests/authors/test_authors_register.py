@@ -48,8 +48,25 @@ class AuthorsRegisterTest(AuthorsBaseTest):
         self.select_form()
         self.assertIn(msg, self.form.text)
 
-    # TODO: create a functional test: Usuário não criar uma conta se estiver logado (New Test)
-    # def test_user_cannot_create_an_account_if_user_is_logged_in(self): ...
+    def test_user_cannot_create_an_account_if_user_is_logged_in(self):
+        string_password = "P@ssw0rd"
+        user = User.objects.create_user(username="MyTestUser", password=string_password)
+
+        self.browser.get(self.live_server_url + reverse('authors:login'))
+        form = self.browser.find_element(
+            By.XPATH,
+            "/html/body/div[2]/form"
+        )
+
+        form.find_element(By.XPATH, '//*[@id="id_username"]').send_keys(user.username)
+        form.find_element(By.XPATH, '//*[@id="id_password"]').send_keys(string_password, Keys.ENTER)
+
+        self.browser.get(self.live_server_url + reverse("authors:register"))
+        self.assertIn(
+            "Nenhuma receita publicada no momento",
+            self.browser.find_element(By.TAG_NAME, "body").text
+        )
+
 
     # TODO: create a functional test: Senha deve conter letras e números
 
