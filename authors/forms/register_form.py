@@ -163,7 +163,6 @@ class RegisterForm(forms.ModelForm):
                 )
             )
 
-
         return email
 
     def clean_password(self, *args, **kwargs):

@@ -1,7 +1,10 @@
-from time import sleep
+import pytest
 
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from parameterized import parameterized
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
@@ -9,6 +12,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from .base import AuthorsBaseTest
 
 
+@pytest.mark.functional_test
 class AuthorsRegisterTest(AuthorsBaseTest):
     def setUp(self) -> None:
         super().setUp()
@@ -36,13 +40,22 @@ class AuthorsRegisterTest(AuthorsBaseTest):
         ("id_username", "Nome de usuário não pode estar em branco"),
         ("id_password", "Senha não pode estar em branco"),
     ])
-    def test_first_name_field_does_not_accept_empty_values(self, field_id, msg):
+    def test_fields_does_not_accept_empty_values(self, field_id, msg):
         self.fill_form_dummy_data(self.form)
         self.get_element_by_id(self.form, "id_email").send_keys("email@invalid")
         field = self.get_element_by_id(self.form, field_id)
         field.send_keys(Keys.ENTER)
         self.select_form()
         self.assertIn(msg, self.form.text)
+
+    # TODO: create a functional test: Usuário não criar uma conta se estiver logado (New Test)
+    # def test_user_cannot_create_an_account_if_user_is_logged_in(self): ...
+
+    # TODO: create a functional test: Senha deve conter letras e números
+
+    # TODO: create a functional test: Senha deve ter no minímo 8 chars
+
+    
 
     def test_incorrect_email_field_message(self):
         self.fill_form_dummy_data(self.form)
@@ -53,6 +66,24 @@ class AuthorsRegisterTest(AuthorsBaseTest):
         )
         self.select_form()
         self.assertIn("Formato de email inválido", self.form.text)
+
+    def test_email_cannot_be_repeated(self):
+        email_repeated = "email@repeated.com"
+
+        User.objects.create_user(
+            username="MyUser",
+            password="TestP@ssw0rd",
+            email=email_repeated
+        )
+
+        self.fill_form_dummy_data(self.form)
+        self.select_fields()
+        self.email.send_keys(
+            email_repeated,
+            Keys.ENTER
+        )
+        self.select_form()
+        self.assertIn("Este email já foi cadastrado", self.form.text)
 
     def test_passwords_do_not_match(self):
         self.fill_form_dummy_data(self.form)
@@ -73,7 +104,7 @@ class AuthorsRegisterTest(AuthorsBaseTest):
         self.email.send_keys("alek@intelcore.com")
         self.password.send_keys("Al3k1nt3lc0r3")
         self.password2.send_keys("Al3k1nt3lc0r3")
-        
+
         form.submit()
 
         body = self.browser.find_element(By.TAG_NAME, "body").text

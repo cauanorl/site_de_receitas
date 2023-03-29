@@ -14,9 +14,10 @@ class AuthorsBaseTest(StaticLiveServerTestCase):
         self.browser.quit()
         return super().tearDown()
 
-    def get_element_by_id(self, form: WebElement, element_id: str) -> WebElement:
-        element = form.find_element(
+    def get_element_by_id(self, web_element: WebElement, element_id: str) -> WebElement:
+        element = web_element.find_element(
             By.XPATH,
             f'//*[@id="{element_id}"]'
         )
+
         return element
