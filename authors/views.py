@@ -1,9 +1,11 @@
-from django.views.generic.base import View, TemplateView
-from django.utils.translation import gettext as _
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
-
 from django import forms
+
+from django.shortcuts import redirect
+
+from django.views.generic.base import View, TemplateView
+
+from django.utils.translation import gettext as _
+
 from django.contrib import messages, auth
 from django.contrib.auth.models import AbstractUser, User
 from django.contrib.auth.mixins import LoginRequiredMixin

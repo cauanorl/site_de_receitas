@@ -1,9 +1,11 @@
 from unittest import TestCase
+from parameterized import parameterized
 
-from django.forms.utils import ErrorList
 from django.test import TestCase as DjangoTestCase
 from django.urls import reverse
-from parameterized import parameterized
+from django.forms.utils import ErrorList
+from django.contrib.auth.models import User
+
 
 from ..forms import RegisterForm
 
@@ -258,3 +260,22 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
                 return True
 
         return False
+
+
+class AuthorsLogoutTests(DjangoTestCase):
+    def test_user_cannot_logout_if_user_is_not_logged_in(self):
+        response = self.client.get(reverse("authors:logout"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            reverse("authors:login") + "?next=" + reverse('authors:logout')
+        )
+
+    def test_user_can_logout(self):
+        username = "MyTestUser"
+        password = "P@ssw0rd"
+        User.objects.create_user(username=username, password=password)
+        self.client.login(username=username, password=password)
+        response = self.client.get(reverse("authors:logout"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("recipes:home"))
