@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 from . import models
 
 
@@ -9,5 +10,34 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'author']
+    empty_value_display = "-empty-"
+    list_display = ['id', 'title', 'author', "category", 'is_published']
+    search_fields = ['title', "author", "category"]
+    list_filter = ["is_published", "category"]
+    list_per_page = 20
+    list_display_links = ['id', 'title', 'author']
+    date_hierarchy = "updated_at"
     prepopulated_fields = {'slug': ('title',)}
+    readonly_fields = ("author",)
+
+
+    fieldsets = (
+        (_("Receita"), {
+            'fields': (
+                'title',
+                "description",
+                'category',
+                "preparation_steps",
+                "cover",
+                ("preparation_time", "preparation_time_unit"),
+                ("servings", "servings_unit"),
+                'author',
+            ),
+            "classes": ("wide", "extrapretty"),
+            "description": _("Essa é uma receita feita por um usuário")
+        }),
+        (_('Outros campos'), {
+            'classes': ('collapse',),
+            'fields': ('is_published', "are_the_preparation_steps_html", 'slug'),
+        }),
+    )
