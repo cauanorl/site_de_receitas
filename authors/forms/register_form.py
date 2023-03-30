@@ -11,10 +11,6 @@ import re
 class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
-        labels = {
-            'last_name': _('Sobrenome'),
-            'email': _('E-mail'),
-        }
         fields = [
             'first_name',
             'last_name',
@@ -56,7 +52,7 @@ class RegisterForm(forms.ModelForm):
 
     last_name = forms.CharField(
         required=True,
-        label="Sobrenome",
+        label=_("Sobrenome"),
         max_length=150,
         min_length=2,
         error_messages={
@@ -70,7 +66,7 @@ class RegisterForm(forms.ModelForm):
     )
 
     email = forms.EmailField(
-        label="E-mail",
+        label=_("E-mail"),
         required=True,
         max_length=150,
         validators=[EmailValidator(message=_("Formato de email inválido"))],
@@ -151,15 +147,6 @@ class RegisterForm(forms.ModelForm):
                 ValidationError(
                     _('Este email já foi cadastrado'),
                     code="invalid"
-                )
-            )
-
-        if len(email) > 150:
-            self.add_error(
-                'email',
-                ValidationError(
-                    _('Email não deve conter mais de 150 caracteres'),
-                    code="max_length"
                 )
             )
 

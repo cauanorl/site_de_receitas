@@ -83,3 +83,14 @@ class AuthorsLoginTest(AuthorsBaseTest):
             "Esse nome de usuário não existe",
             self.browser.find_element(By.TAG_NAME, "body").text
         )
+
+    def test_login_fields_do_not_accept_empty_values(self):
+        username = " "
+        string_password = " "
+
+        self.browser.get(self.live_server_url + reverse("authors:login"))
+        self.fill_out_and_submit_login_form(username, string_password)
+        self.assertIn(
+            "Este campo é obrigatório",
+            self.browser.find_element(By.TAG_NAME, "body").text
+        )
