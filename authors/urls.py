@@ -8,5 +8,6 @@ app_name = 'authors'
 urlpatterns = [
     path(_('register/'), views.RegisterView.as_view(), name="register"),
     path(_('login/'), views.LoginView.as_view(), name="login"),
-    path(_('logout/'), views.LogoutView.as_view(), name="logout")
+    path(_('logout/'), views.LogoutView.as_view(), name="logout"),
+    path(_('dashboard/'), views.DashboardView.as_view(), name="dashboard")
 ]

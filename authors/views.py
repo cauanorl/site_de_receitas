@@ -60,7 +60,7 @@ class LoginView(TemplateView, View):
 
             if user:
                 auth.login(self.request, user)
-                return redirect('recipes:home')
+                return redirect('authors:dashboard')
 
             if not User.objects.filter(username=username).exists():
                 form.add_error(
@@ -86,3 +86,10 @@ class LogoutView(LoginRequiredMixin, View):
         auth.logout(self.request)
 
         return redirect("recipes:home")
+
+
+class DashboardView(TemplateView, View):
+    template_name = "authors/pages/dashboard.html"
+
+    def get(self, *args, **kwargs):
+        return self.render_to_response({"test": "Teste"})
