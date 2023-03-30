@@ -67,12 +67,38 @@ class AuthorsRegisterTest(AuthorsBaseTest):
             self.browser.find_element(By.TAG_NAME, "body").text
         )
 
+    def test_password_must_contain_letters(self):
+        self.fill_form_dummy_data(self.form)
+        self.select_fields()
+        self.email.send_keys("email@valid.com")
+        self.password.send_keys("1111111111", Keys.ENTER)
+        self.select_form()
+        self.assertIn(
+            "A senha deve conter letras e números",
+            self.form.text
+        )
 
-    # TODO: create a functional test: Senha deve conter letras e números
+    def test_password_must_contain_numbers(self):
+        self.fill_form_dummy_data(self.form)
+        self.select_fields()
+        self.email.send_keys("email@valid.com")
+        self.password.send_keys("aaaaaaaaaaaa", Keys.ENTER)
+        self.select_form()
+        self.assertIn(
+            "A senha deve conter letras e números",
+            self.form.text
+        )
 
-    # TODO: create a functional test: Senha deve ter no minímo 8 chars
-
-    
+    def test_password_must_contain_at_least_eight_chars(self):
+        self.fill_form_dummy_data(self.form)
+        self.select_fields()
+        self.email.send_keys("email@valid.com")
+        self.password.send_keys("A123456", Keys.ENTER)
+        self.select_form()
+        self.assertIn(
+            "A senha deve conter no minímo 8 caracteres",
+            self.form.text
+        )
 
     def test_incorrect_email_field_message(self):
         self.fill_form_dummy_data(self.form)
