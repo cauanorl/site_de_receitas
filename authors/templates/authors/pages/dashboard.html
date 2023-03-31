@@ -3,6 +3,8 @@
 
 
 {% block head %}
+<link rel="stylesheet" href="{% static 'recipes/css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'authors/css/base.css' %}">
   <title>Dashboard ({{ user }})</title>
 {% endblock %}
 
@@ -13,7 +15,33 @@
     <h2>
       Dashboard ({{ user }})
     </h2>
+    <div class="authors-dashboard-container">
+      <h3>Your recipes</h3>
+      <ul>
+        {% for recipe in recipes %}
+          <li>
+            {% if not recipe.is_published %}
+              <a href="{% url "authors:dashboard_recipe_edit" recipe.id %}">
+                {{ recipe.title }}
+              </a>
+            {% else %}
+              <p>
+                {{ recipe.title }}
+              </p>
+            {% endif %}
+          </li>
+        {% empty %}
+          <li>
+            <p>
+              You don't have any recipes published yet
+            </p>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
+
+  {% include "recipes/partials/_pagination.html" %}
 
   {% include 'partials/_messages.html' %}
   {% include 'partials/_footer.html' %}

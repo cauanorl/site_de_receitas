@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'authors/css/base.css' %}">
+  <title>Dashboard Recipe |</title>
+{% endblock %}
+
+{% block content %}
+  {% include 'partials/_header.html' %}
+
+  <div class="main-content center container">
+    <h2>
+      Dashboard Recipe {{ recipe.title }}
+    </h2>
+    {% include 'partials/_messages.html' %}
+    <div class="authors-dashboard-container">
+      <form action="" method="POST">
+        {% include 'partials/_form.html' %}
+      </form>
+    </div>
+  </div>
+  
+  {% include 'partials/_footer.html' %}
+{% endblock %}

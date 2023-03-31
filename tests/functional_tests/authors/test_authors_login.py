@@ -52,7 +52,7 @@ class AuthorsLoginTest(AuthorsBaseTest):
         self.fill_out_and_submit_login_form(user.username, string_password)
 
         self.assertIn(
-            "Nenhuma receita publicada no momento",
+            f"Dashboard ({user.username})",
             self.browser.find_element(By.TAG_NAME, "body").text
         )
 

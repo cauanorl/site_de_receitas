@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
 
 
 class PublishedManager(models.Manager):
@@ -14,6 +15,7 @@ class PublishedManager(models.Manager):
 class Category(models.Model):
     class Meta:
         verbose_name_plural = "Categories"
+        verbose_name = "Category"
 
     name = models.CharField(max_length=30)
     
@@ -41,7 +43,7 @@ class Recipe(models.Model):
     are_the_preparation_steps_html = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=False, verbose_name=_("published"))
     cover = models.ImageField(upload_to="recipes/covers/%Y/%m/%d/")
 
     category = models.ForeignKey(
@@ -59,3 +61,7 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)

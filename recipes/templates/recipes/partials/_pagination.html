@@ -1,7 +1,6 @@
 {% if page_obj %}
   <div class="main-content container pagination" style="text-align:center;">
     <div class="pagination-content">
-
       {% if page_range.first_page_out_of_range %}
         <a
           href="?page=1{% if search %}&q={{ search }}{% endif %}"
@@ -24,7 +23,7 @@
             {{ page }}
           </a>
         {% endif %}
-  
+
       {% endfor  %}
 
       {% if page_range.last_page_out_of_range %}

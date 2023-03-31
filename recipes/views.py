@@ -17,13 +17,15 @@ PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
 
 class AbstractPaginationListView(ListView):
-    queryset = Recipe.published.all()
     extra_context = {}
+
+    def get_queryset(self):
+        return Recipe.published.all()
 
     def set_pagination(
             self, queryset, context_object_name='object',
-            number_of_pages=4, per_page=9, *args, **kwargs
-        ):
+            number_of_pages=4, per_page=9, *args, **kwargs):
+
         paginator = Paginator(queryset, per_page)
         current_page = int(self.request.GET.get('page', 1))
 
@@ -46,7 +48,8 @@ class Home(AbstractPaginationListView):
     extra_context = {'title': 'Home'}
 
     def get(self, *args, **kwargs):
-        self.set_pagination(super().get_queryset(), 'recipes', per_page=PER_PAGE)
+        self.set_pagination(
+            super().get_queryset(), 'recipes', per_page=PER_PAGE)
         return super().get(*args, **kwargs)
 
 
@@ -58,7 +61,7 @@ class DetailRecipe(DetailView):
 
     def get_object(self):
         obj = super().get_object()
-        if not obj.is_published == True:
+        if not obj.is_published:
             raise Http404()
 
         return obj
