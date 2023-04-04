@@ -203,5 +203,7 @@ class DashboardRecipeDelete(DetailView):
 
         if obj.author == user:
             obj.delete()
+            messages.success(
+                self.request, "Sua receita foi apagada com sucesso")
 
         return redirect(reverse("authors:dashboard"))
