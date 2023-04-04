@@ -15,12 +15,25 @@
       Dashboard Recipe {{ recipe.title }}
     </h2>
     {% include 'partials/_messages.html' %}
-    <div class="authors-dashboard-container">
-      <form action="" method="POST">
+    <div class="">
+      <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
         {% include 'partials/_form.html' %}
+
+        <div class="form-content form-content-grid">
+          <div class="form-group">
+  
+            <button type="submit">
+              Edit Recipe
+            </button>
+  
+          </div>
+        </div>
+
       </form>
     </div>
   </div>
-  
+
   {% include 'partials/_footer.html' %}
 {% endblock %}

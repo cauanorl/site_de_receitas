@@ -32,18 +32,18 @@ class RecipeModelTest(RecipeTestBase):
         self.assertFalse(self.recipe.is_published)
 
     def test_recipe_slug_field_is_unique(self):
-        other_recipe = self.make_random_recipe(author_data={
-            'username': 'Alek',
-            'password': 'teste123'
-        })
-        self.recipe.slug = other_recipe.slug
+        other_recipe = self.make_random_recipe(
+            author_data={
+                'username': 'Alek',
+                'password': 'teste123'
+            })
 
         with self.assertRaises(
             IntegrityError,
-            msg="The slug field in Recipes don't raise an IntegrityError."
-                f"The slug fields aren't the same."
-                f"\n\n Slug-1: {self.recipe.slug} != Slug-2: {other_recipe.slug}"
+            msg="The slug field in Recipes don't raise an IntegrityError. "
+                "The slug fields aren't the same."
         ):
+            self.recipe.title = other_recipe.title
             self.recipe.save()
 
 
@@ -52,7 +52,7 @@ class CategoryModelTest(RecipeTestBase):
         self.category = Category.objects.create(name="test category")
         return super().setUp()
 
-    def test_category_name_field_raises_an_error_if_max_length_is_greater_than_30_chars(self):
+    def test_category_name_field_raises_an_error_if_max_length_is_greater_than_30_chars(self): # noqa
         self.category.name = "a" * 31
         self.assertRaises(
             ValidationError,

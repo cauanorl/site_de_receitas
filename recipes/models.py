@@ -18,7 +18,7 @@ class Category(models.Model):
         verbose_name = "Category"
 
     name = models.CharField(max_length=30)
-    
+
     def __str__(self):
         return self.name
 
@@ -38,12 +38,20 @@ class Recipe(models.Model):
         ], max_length=1)
 
     servings = models.PositiveIntegerField()
-    servings_unit = models.CharField(max_length=65)
+    servings_unit = models.CharField(
+        max_length=65,
+        choices=[
+            ("O", _("Person")),  # One
+            ("M", _("People"))  # Two or more
+        ]
+    )
     preparation_steps = models.TextField()
     are_the_preparation_steps_html = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=False, verbose_name=_("published"))
+    is_published = models.BooleanField(
+        default=False,
+        verbose_name=_("published"))
     cover = models.ImageField(upload_to="recipes/covers/%Y/%m/%d/")
 
     category = models.ForeignKey(

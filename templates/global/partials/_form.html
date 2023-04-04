@@ -1,13 +1,24 @@
 <div class="form-content form-content-grid">
   {% for field in form %}
 
-    <div class="form-group {% if field.errors %}form-error{% endif %}">
+    <div 
+      class="
+        form-group 
+        {% if field.errors %}form-error{% endif %} 
+        {{ field.field.widget.attrs.class }}
+      "
+    >
+
+      {% if field.name == "cover" and field.value.url %} 
+        <img src="{{ field.value.url }}" alt="Capa para {{ recipe.title }}">
+      {% endif %}
 
       <label for="{{ field.id_for_label }}">{{ field.label }}</label>
       {{ field }}<br>
 
       {{ field.errors }}
+
     </div>
-    
+
   {% endfor %}
 </div>

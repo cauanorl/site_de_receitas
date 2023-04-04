@@ -3,6 +3,7 @@ from django import forms
 from django.shortcuts import redirect
 
 from django.urls import reverse
+
 from django.http import Http404
 
 from django.views.generic.base import View, TemplateView
@@ -17,7 +18,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from recipes.views import AbstractPaginationListView
 from recipes.models import Recipe
 
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, RecipeForm
 
 
 class RegisterView(TemplateView, View):
@@ -119,6 +120,7 @@ class DashboardRecipeEdit(DetailView):
     model = Recipe
     pk_url_kwarg = "recipe_id"
     context_object_name = "recipe"
+    extra_context = {}
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
@@ -127,4 +129,57 @@ class DashboardRecipeEdit(DetailView):
         if obj.author != user or obj.is_published or not user.is_authenticated:
             raise Http404()
 
+        form = RecipeForm(instance=obj)
+
+        self.extra_context.update({'form': form})
         return super().get(request, *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        obj = self.get_object()
+        form = RecipeForm(
+            data=self.request.POST,
+            files=self.request.FILES,
+            instance=obj
+        )
+
+        if form.is_valid() and self.request.user.is_authenticated:
+            form.save()
+            messages.success(
+                self.request, _("Sua receita foi atualizada com sucesso!"))
+
+        return self.render_to_response({
+            'form': form,
+            'recipe': obj
+        })
+
+
+class DashboardRecipeCreate(TemplateView, View):
+    template_name = "authors/pages/dashboard_recipe.html"
+
+    def get(self, *args, **kwargs):
+        form = RecipeForm()
+
+        if not self.request.user.is_authenticated:
+            raise Http404()
+
+        return self.render_to_response({"form": form})
+
+    def post(self, *args, **kwargs):
+        form = RecipeForm(
+            data=self.request.POST,
+            files=self.request.FILES
+        )
+
+        if not self.request.user.is_authenticated:
+            raise Http404()
+
+        if form.is_valid():
+            recipe: Recipe = form.save(commit=False)
+
+            recipe.author = self.request.user
+            recipe.are_preparation_time_html = False
+
+            recipe.save()
+            messages.success(self.request, _("Receita criada com sucesso!"))
+
+        return redirect(reverse("authors:dashboard"))
