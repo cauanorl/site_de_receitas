@@ -19,14 +19,22 @@
       <h3>Your recipes</h3>
       <ul>
         {% for recipe in recipes %}
-          <li>
+          <li class="recipe-item-dashboard">
             {% if not recipe.is_published %}
               <a href="{% url "authors:dashboard_recipe_edit" recipe.id %}">
-                {{ recipe.title }}
+                {{ recipe.title }} - 
+                <form 
+                  action="{% url "authors:dashboard_recipe_delete" recipe.id %}" 
+                  method="POST"
+                  class="inline-form"
+                >
+                  {% csrf_token %}
+                  <button>Delete</button>
+                </form>
               </a>
             {% else %}
               <p>
-                {{ recipe.title }}
+                {{ recipe.title }} 
               </p>
             {% endif %}
           </li>
@@ -40,7 +48,7 @@
       </ul>
     </div>
   </div>
-  
+
   {% include "recipes/partials/_pagination.html" %}
 
   {% include 'partials/_messages.html' %}

@@ -188,3 +188,20 @@ class DashboardRecipeCreate(TemplateView, View):
             self.request, _("Ocorreu um erro na criação da receita"))
 
         return self.render_to_response({"form": form})
+
+
+class DashboardRecipeDelete(DetailView):
+    model = Recipe
+    pk_url_kwarg = 'recipe_id'
+
+    def post(self, *args, **kwargs):
+        obj = self.get_object()
+        user = self.request.user
+
+        if not obj or not user.is_authenticated:
+            raise Http404()
+
+        if obj.author == user:
+            obj.delete()
+
+        return redirect(reverse("authors:dashboard"))
