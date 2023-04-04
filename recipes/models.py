@@ -71,5 +71,6 @@ class Recipe(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify(self.title) + f"-{self.pk}"
+
         return super().save(*args, **kwargs)

@@ -182,4 +182,9 @@ class DashboardRecipeCreate(TemplateView, View):
             recipe.save()
             messages.success(self.request, _("Receita criada com sucesso!"))
 
-        return redirect(reverse("authors:dashboard"))
+            return redirect(reverse("authors:dashboard"))
+
+        messages.error(
+            self.request, _("Ocorreu um erro na criação da receita"))
+
+        return self.render_to_response({"form": form})
