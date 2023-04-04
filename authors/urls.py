@@ -12,14 +12,14 @@ urlpatterns = [
     path(_('dashboard/'), views.DashboardView.as_view(), name="dashboard"),
 
     path(
-        _('dashboard/recipe/edit/<int:recipe_id>/'),
-        views.DashboardRecipeEdit.as_view(),
-        name="dashboard_recipe_edit"
-    ),
-
-    path(
         _('dashboard/recipe/create/'),
         views.DashboardRecipeCreate.as_view(),
         name="dashboard_recipe_create"
+    ),
+
+    path(
+        _('dashboard/recipe/edit/<int:recipe_id>/'),
+        views.DashboardRecipeEdit.as_view(),
+        name="dashboard_recipe_edit"
     ),
 ]

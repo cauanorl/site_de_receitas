@@ -27,7 +27,7 @@ class Recipe(models.Model):
     objects = models.Manager()
     published = PublishedManager()
 
-    title = models.CharField(max_length=65)
+    title = models.CharField(max_length=150)
     description = models.CharField(max_length=165)
     slug = models.SlugField(unique=True)
     preparation_time = models.PositiveIntegerField()
@@ -42,7 +42,7 @@ class Recipe(models.Model):
         max_length=65,
         choices=[
             ("O", _("Person")),  # One
-            ("M", _("People"))  # Two or more
+            ("M", _("People"))  # Many
         ]
     )
     preparation_steps = models.TextField()
