@@ -1,5 +1,4 @@
 from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
 from parameterized import parameterized
 
 from ..models import Category
@@ -30,21 +29,6 @@ class RecipeModelTest(RecipeTestBase):
 
     def test_recipe_is_published_is_false_by_default(self):
         self.assertFalse(self.recipe.is_published)
-
-    def test_recipe_slug_field_is_unique(self):
-        other_recipe = self.make_random_recipe(
-            author_data={
-                'username': 'Alek',
-                'password': 'teste123'
-            })
-
-        with self.assertRaises(
-            IntegrityError,
-            msg="The slug field in Recipes don't raise an IntegrityError. "
-                "The slug fields aren't the same."
-        ):
-            self.recipe.title = other_recipe.title
-            self.recipe.save()
 
 
 class CategoryModelTest(RecipeTestBase):

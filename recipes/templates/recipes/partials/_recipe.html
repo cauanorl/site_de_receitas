@@ -14,7 +14,7 @@
 
     <h2 class="recipe-title">
         {% if not is_detail_page %}
-          <a href="{% url 'recipes:detail' recipe.id %}">
+          <a href="{{ recipe.get_absolute_url }}">
             {{ recipe.title }}
           </a>
         {% else %}

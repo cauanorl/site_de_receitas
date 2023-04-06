@@ -150,3 +150,10 @@ MESSAGE_TAGS = {
     messages.INFO: 'message-info',
     messages.DEBUG: 'message-dubug',
 }
+
+
+# LOGIN
+
+from django.urls import reverse_lazy
+
+LOGIN_URL = reverse_lazy("authors:login")
