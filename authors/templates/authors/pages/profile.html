@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'authors/css/base.css' %}">
+  <title>Profile</title>
+{% endblock %}
+
+{% block content %}
+
+  {% include 'partials/_header.html' %}
+
+  <div class="main-content center container">
+    <h2>{{ profile.author.username }}</h2>
+    <p>
+      {{ profile.bio }}
+    </p>
+  </div>
+
+  {% include 'partials/_messages.html' %}
+  {% include 'partials/_footer.html' %}
+
+{% endblock %}
