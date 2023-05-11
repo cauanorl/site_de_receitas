@@ -1,4 +1,4 @@
-function myScope() {
+(() => {
   const $formDelete = document.querySelectorAll(".delete-recipe-form")
 
   $formDelete.forEach(
@@ -13,6 +13,5 @@ function myScope() {
       );
     }
   );
-}
+})();
 
-myScope()

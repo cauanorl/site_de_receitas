@@ -11,6 +11,7 @@
   </head>
 
   <body>
+    {% include "partials/_menu.html" %}
     {% include 'partials/_header.html' %}
     {% include 'partials/_search-container.html' %}
 
@@ -21,5 +22,6 @@
 
     {% include 'partials/_footer.html' %}
     {% block import_dom %}{% endblock %}
+    <script src="{% static '/js/menu.js' %}"></script>
   </body>
 </html>

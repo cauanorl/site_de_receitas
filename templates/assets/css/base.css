@@ -225,3 +225,76 @@ footer {
 }
 
 
+.hidden-text {
+  display: none;
+}
+
+.menu-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background-color: var(--primary-color);
+  min-height: 100vh;
+  overflow-y: auto;
+  z-index: 2;
+  transition: all 300ms ease-in-out;
+}
+
+.menu-container a {
+  color: white;
+  text-decoration: none;  
+}
+
+.menu-hidden {
+  left: -255px;
+}
+
+.button-show-menu {
+  position: fixed;
+  left: 265px;
+  top: 3rem;
+  color: white;
+  background-color: var(--primary-color);
+  border: none;
+  font-size: 2rem;
+  z-index: 3;
+  padding: 1rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 300ms ease-in-out;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.button-show-menu-visible {
+  visibility: visible;
+  opacity: 1;
+  left: 5px;
+}
+
+.button-close-menu {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: white;
+  background:none;
+  border: none;
+  font-size: 2rem;
+  z-index: 3;
+  cursor: pointer;
+}
+
+.menu-nav {
+  display: flex;
+  flex-flow: column wrap;
+  font-family: var(--font-headings);
+  font-size: 2rem;
+}
+
+.menu-nav a {
+  width: 100%;
+  padding: 1rem;
+
+}

@@ -9,8 +9,10 @@
   </head>
 
   <body>
+    {% include "partials/_menu.html" %}
     {% block content %}{% endblock %}
 
     <script src="{% static '/js/scripts.js' %}"></script>
+    <script src="{% static '/js/menu.js' %}"></script>
   </body>
 </html>
