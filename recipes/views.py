@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import get_object_or_404, redirect
 
 from django.http import Http404
@@ -6,21 +8,27 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
 from django.core.paginator import Paginator
+
 from django.db.models import Q
 
-from .models import Category, Recipe
 from utils.pagination import make_pagination_range
 
-import os
+from tag.models import Tag
+from .models import Category, Recipe
+
 
 PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
 
-class AbstractPaginationListView(ListView):
+class AbstractPaginationRecipesListView(ListView):
     extra_context = {}
 
     def get_queryset(self):
-        return Recipe.published.all()
+        qs = Recipe.published.all()
+        qs = qs.select_related("author", "category")
+        qs = qs.prefetch_related("tags")
+
+        return qs
 
     def set_pagination(
             self, queryset, context_object_name='object',
@@ -43,7 +51,7 @@ class AbstractPaginationListView(ListView):
         })
 
 
-class Home(AbstractPaginationListView):
+class Home(AbstractPaginationRecipesListView):
     template_name = 'recipes/pages/home.html'
     extra_context = {'title': 'Home'}
 
@@ -67,12 +75,15 @@ class DetailRecipe(DetailView):
         return obj
 
 
-class FilterRecipesByCategory(AbstractPaginationListView):
+class FilterRecipesByCategory(AbstractPaginationRecipesListView):
     template_name = "recipes/pages/home.html"
 
     def get(self, request, category_id, *args, **kwargs):
         category = get_object_or_404(Category, id=category_id)
-        recipes = Recipe.published.filter(category__id=category_id)
+        recipes = Recipe.published\
+            .filter(category__id=category_id)\
+            .select_related("author", "category")
+
         category_name = category.name
 
         self.set_pagination(recipes, 'recipes', per_page=PER_PAGE)
@@ -85,7 +96,7 @@ class FilterRecipesByCategory(AbstractPaginationListView):
         return super().get(request, *args, **kwargs)
 
 
-class SearchRecipes(AbstractPaginationListView):
+class SearchRecipes(AbstractPaginationRecipesListView):
     template_name = 'recipes/pages/home.html'
     extra_context = {'title': 'Searching'}
 
@@ -108,6 +119,29 @@ class SearchRecipes(AbstractPaginationListView):
     def get(self, *args, **kwargs):
         if not self.request.GET.get('q'):
             return redirect('recipes:home')
+
+        self.set_pagination(self.get_queryset(), 'recipes', per_page=PER_PAGE)
+
+        return super().get(*args, **kwargs)
+
+
+class TagListView(AbstractPaginationRecipesListView):
+    template_name = 'recipes/pages/tag.html'
+    extra_context = {'title': 'Searching'}
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.filter(tags__slug=self.kwargs.get("slug", ''))
+
+        title = Tag.objects.get(slug=self.kwargs.get('slug', ''))
+
+        self.extra_context.update({
+            'title': f'{title}'
+        })
+
+        return qs
+
+    def get(self, *args, **kwargs):
 
         self.set_pagination(self.get_queryset(), 'recipes', per_page=PER_PAGE)
 

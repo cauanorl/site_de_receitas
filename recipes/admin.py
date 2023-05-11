@@ -1,6 +1,17 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from django.contrib.contenttypes.admin import GenericStackedInline
 from . import models
+from tag.models import Tag
+
+
+class InlineTag(GenericStackedInline):
+    model = Tag
+    ct_field = "target_ct"
+    ct_fk_field = "target_id"
+    verbose_name = "Tag"
+    exclude = ["slug"]
+    extra = 2
 
 
 @admin.register(models.Category)
@@ -24,6 +35,8 @@ class RecipeAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     # readonly_fields = ("author",)
     ordering = ['-updated_at']
+
+    inlines = [InlineTag]
 
     fieldsets = (
         (_("Receita"), {

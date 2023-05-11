@@ -13,14 +13,14 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from recipes.views import AbstractPaginationListView
+from recipes.views import AbstractPaginationRecipesListView
 from recipes.models import Recipe
 
 from ..forms import RecipeForm
 
 
 @method_decorator(login_required, name="dispatch")
-class DashboardView(AbstractPaginationListView):
+class DashboardView(AbstractPaginationRecipesListView):
     template_name = "authors/pages/dashboard.html"
     context_object_name = 'recipes'
 
@@ -50,7 +50,7 @@ class DashboardRecipeEdit(DetailView):
         user = self.request.user
         obj = self.get_object()
 
-        if obj.author != user or obj.is_published or not user.is_authenticated:
+        if obj.author != user or obj.is_published:
             raise Http404()
 
         form = self.form_class(instance=obj)
@@ -66,7 +66,7 @@ class DashboardRecipeEdit(DetailView):
             instance=obj
         )
 
-        if form.is_valid() and self.request.user.is_authenticated:
+        if form.is_valid():
             form.save()
             messages.success(
                 self.request, _("Sua receita foi atualizada com sucesso!"))
@@ -130,3 +130,6 @@ class DashboardRecipeDelete(DetailView):
                 self.request, "Sua receita foi apagada com sucesso")
 
         return redirect(reverse("authors:dashboard"))
+
+
+# TODO: Fazer testes

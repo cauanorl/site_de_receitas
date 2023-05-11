@@ -7,7 +7,7 @@ app_name = 'recipes'
 
 urlpatterns = [
     path('', views.Home.as_view(), name="home"),
-    
+
     path(
         _('recipes/search/'),
         views.SearchRecipes.as_view(),
@@ -21,4 +21,10 @@ urlpatterns = [
         views.FilterRecipesByCategory.as_view(),
         name="filter_by_category"
     ),
+
+    path(
+        "recipes/tags/<slug:slug>/",
+        views.TagListView.as_view(),
+        name="tag"
+    )
 ]

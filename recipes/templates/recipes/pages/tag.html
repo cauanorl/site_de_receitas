@@ -1,0 +1,39 @@
+{% extends 'recipes/base/base.html' %}
+{% load static %}
+
+
+{% block head %}
+
+  <title>{{ title }} | Recipes</title>
+
+{% endblock %}
+
+{% block content %}
+
+  {% include 'partials/_messages.html' %}
+
+  {% if category_name %}
+    <div class="container center">
+      <h2>Filter by: {{ category_name }}</h2>
+    </div>
+  {% endif %}
+
+  <div class="main-content main-content-list container">
+
+    {% for recipe in recipes %}
+      {% include 'recipes/partials/_recipe.html' with recipe=recipe %}
+    {% empty %}
+      {% if search %}
+        <h1 style="text-align: center; margin: 10rem 0rem;">Nenhuma receita para a pesquisa: {{ search }}</h1>
+      {% else %}
+        <h1 style="text-align: center; margin: 10rem 0rem;">Nenhuma receita publicada no momento</h1>
+      {% endif %}
+    {% endfor %}
+
+  </div>
+
+
+  {% include 'recipes/partials/_pagination.html' %}
+
+
+{% endblock %}
