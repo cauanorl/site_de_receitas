@@ -58,7 +58,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -100,16 +99,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',  # noqa
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',  # noqa
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',  # noqa
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',  # noqa
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -125,9 +124,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-LOCALE_PATHS = [
-    BASE_DIR / "locale",
-]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -150,7 +146,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = "media/"
 
 
-from django.contrib.messages import constants as messages  # noqa
+from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
     messages.ERROR: 'message-error',
@@ -163,7 +159,7 @@ MESSAGE_TAGS = {
 
 # LOGIN
 
-from django.urls import reverse_lazy  # noqa
+from django.urls import reverse_lazy
 
 LOGIN_URL = reverse_lazy("authors:login")
 

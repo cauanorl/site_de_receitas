@@ -24,8 +24,8 @@ class PublishedManager(models.Manager):
 
 class Category(models.Model):
     class Meta:
-        verbose_name_plural = _("Categories")
-        verbose_name = _("Category")
+        verbose_name_plural = "Categories"
+        verbose_name = "Category"
 
     name = models.CharField(max_length=30)
 
@@ -50,20 +50,17 @@ class Recipe(models.Model):
         choices=[
             ('M', _('Minutes')),
             ('H', _('Hours')),
-        ], max_length=1,
-        verbose_name=_("Preparation time unit")
-    )
+        ], max_length=1)
 
-    servings = models.PositiveIntegerField(verbose_name=_("Servings"))
+    servings = models.PositiveIntegerField()
     servings_unit = models.CharField(
         max_length=65,
         choices=[
             ("O", _("Person")),  # One
             ("M", _("People"))  # Many
-        ],
-        verbose_name=_("Servings unit")
+        ]
     )
-    preparation_steps = models.TextField(verbose_name=_("Preparation steps"))
+    preparation_steps = models.TextField()
     are_the_preparation_steps_html = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(
@@ -84,15 +81,12 @@ class Recipe(models.Model):
         null=True,
         blank=True,
         default=None,
-        verbose_name=_("Category")
     )
 
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="recipes",
-        verbose_name=_("Author")
-    )
+        related_name="recipes")
 
     tags = GenericRelation(
         Tag,
