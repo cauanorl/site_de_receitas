@@ -6,6 +6,6 @@ class RecipesConfig(AppConfig):
     name = 'recipes'
 
     def ready(self) -> None:
-        import recipes.signals  # noqa
+        import recipes.signals
 
         return super().ready()
